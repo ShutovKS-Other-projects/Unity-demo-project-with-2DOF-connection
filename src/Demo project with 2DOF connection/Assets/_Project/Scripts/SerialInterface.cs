@@ -4,31 +4,101 @@ using System.Text;
 using System.Threading;
 using Data;
 
+/// <summary>
+/// Класс, представляющий интерфейс для взаимодействия с устройством через последовательный порт.
+/// </summary>
 public class SerialInterface
 {
+    /// <summary>
+    /// Приватное поле для хранения объекта AxisAssignments, представляющего назначения осей движения для группы A моторов.
+    /// </summary>
     private AxisAssignments _axisAssignmentsA = new();
+
+    /// <summary>
+    /// Приватное поле для хранения объекта AxisAssignments, представляющего назначения осей движения для группы B моторов.
+    /// </summary>
     private AxisAssignments _axisAssignmentsB = new();
+
+    /// <summary>
+    /// Данные о последовательном порту для взаимодействия с устройством.
+    /// </summary>
     private InterfaceSerialData _interfaceSerialData;
+
+    /// <summary>
+    /// Данные о телеметрии игры для взаимодействия с устройством.
+    /// </summary>
     private GameTelemetry _gameTelemetry;
 
-    private string SData { get; set; }
-
-    private DateTime _lastChangeTime;
-
-    private bool _stopPlatformMode;
-    private bool _terminated = false;
-    private bool _gamePaused;
-    private bool _stop;
-
-    private readonly double[] _lastAxisA = new double[9];
-    private readonly double[] _lastAxisB = new double[9];
-
+    /// <summary>
+    /// Последние измеренные значения оси Pitch.
+    /// </summary>
     private double _lastPitch;
+
+    /// <summary>
+    /// Последние измеренные значения оси Roll.
+    /// </summary>
     private double _lastRoll;
+
+    /// <summary>
+    /// Последние измеренные значения оси Yaw.
+    /// </summary>
     private double _lastYaw;
+
+    /// <summary>
+    /// Последние измеренные значения оси Surge.
+    /// </summary>
     private double _lastSurge;
+
+    /// <summary>
+    /// Последние измеренные значения оси Sway.
+    /// </summary>
     private double _lastSway;
 
+    /// <summary>
+    /// Приватное поле для хранения строки данных SData.
+    /// </summary>
+    private string SData { get; set; }
+
+    /// <summary>
+    /// Приватное поле для хранения последнего времени изменения данных.
+    /// </summary>
+    private DateTime _lastChangeTime;
+
+    /// <summary>
+    /// Приватное поле для указания на остановку работы с устройством в режиме платформы.
+    /// </summary>
+    private bool _stopPlatformMode;
+
+    /// <summary>
+    /// Приватное поле для указания завершения работы класса.
+    /// </summary>
+    private bool _terminated = false;
+
+    /// <summary>
+    /// Приватное поле для указания на приостановку игры.
+    /// </summary>
+    private bool _gamePaused;
+
+    /// <summary>
+    /// Приватное поле для указания на остановку работы с устройством.
+    /// </summary>
+    private bool _stop;
+
+    /// <summary>
+    /// Последние измеренные значения оси A (для каждого мотора).
+    /// </summary>
+    private readonly double[] _lastAxisA = new double[9];
+
+    /// <summary>
+    /// Последние измеренные значения оси B (для каждого мотора).
+    /// </summary>
+    private readonly double[] _lastAxisB = new double[9];
+
+    /// <summary>
+    /// Конструктор класса SerialInterface, инициализирующий объект для взаимодействия с устройством.
+    /// </summary>
+    /// <param name="interfaceSerialData">Данные о последовательном порту.</param>
+    /// <param name="gameTelemetry">Данные о телеметрии игры.</param>
     public SerialInterface(InterfaceSerialData interfaceSerialData, GameTelemetry gameTelemetry)
     {
         _interfaceSerialData = interfaceSerialData;
@@ -38,16 +108,27 @@ public class SerialInterface
         Start();
     }
 
-    public void StartComPort()
+
+    /// <summary>
+    /// Приватный метод для инициализации соединения с последовательным портом.
+    /// </summary>
+    private void StartComPort()
     {
         ComPort.TryConnect();
     }
 
-    public void StopComPort()
+    /// <summary>
+    /// Приватный метод для завершения соединения с последовательным портом.
+    /// </summary>
+    private void StopComPort()
     {
         ComPort.Disconnect();
     }
 
+    /// <summary>
+    /// Метод для установки параметров взаимодействия с устройством.
+    /// </summary>
+    /// <param name="started">Флаг, указывающий, начата ли работа с устройством.</param>
     public void SetUp(bool started)
     {
         if (started)
@@ -92,7 +173,11 @@ public class SerialInterface
         }
     }
 
-
+    /// <summary>
+    /// Метод для получения индексов осей движения из данных интерфейса.
+    /// </summary>
+    /// <param name="indAxis">Массив для хранения индексов осей движения.</param>
+    /// <param name="interfaceData">Данные о последовательном порту.</param>
     private void GetInterfaceAxisIndex(int[] indAxis, ref string interfaceData)
     {
         var motorSubstrings = new[]
@@ -119,11 +204,21 @@ public class SerialInterface
         }
     }
 
+    /// <summary>
+    /// Преобразует значение типа byte в массив байт в формате ASCII.
+    /// </summary>
+    /// <param name="value">Значение типа byte для преобразования.</param>
+    /// <returns>Массив байт в формате ASCII.</returns>
     private byte[] GetHexBytes(byte value)
     {
         return Encoding.ASCII.GetBytes(value.ToString("X2"));
     }
 
+    /// <summary>
+    /// Преобразует целочисленное значение в массив байт в формате ASCII с фиксированной шириной.
+    /// </summary>
+    /// <param name="value">Целочисленное значение для преобразования.</param>
+    /// <returns>Массив байт в формате ASCII.</returns>
     private byte[] GetDecimalBytes(int value)
     {
         if (value > 999)
@@ -134,6 +229,14 @@ public class SerialInterface
         return Encoding.ASCII.GetBytes(value.ToString("000"));
     }
 
+    /// <summary>
+    /// Определяет приостановку игры на основе изменений в значениях осей движения.
+    /// </summary>
+    /// <param name="pitch">Значение оси Pitch.</param>
+    /// <param name="roll">Значение оси Roll.</param>
+    /// <param name="yaw">Значение оси Yaw.</param>
+    /// <param name="sway">Значение оси Sway.</param>
+    /// <param name="surge">Значение оси Surge.</param>
     private void DetectPauseGame(double pitch, double roll, double yaw, double sway, double surge)
     {
         if (pitch != _lastPitch || roll != _lastRoll || yaw != _lastYaw || surge != _lastSurge || sway != _lastSway)
@@ -161,7 +264,10 @@ public class SerialInterface
         _lastSway = sway;
     }
 
-    public void Start()
+    /// <summary>
+    /// Метод для запуска основной логики работы с устройством.
+    /// </summary>
+    private void Start()
     {
         new Thread(() =>
         {
