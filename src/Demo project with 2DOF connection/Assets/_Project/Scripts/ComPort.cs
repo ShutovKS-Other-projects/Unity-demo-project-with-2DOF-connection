@@ -1,9 +1,20 @@
 using System.IO.Ports;
 
+/// <summary>
+/// Утилитарный класс для управления COM-портом с использованием SerialPort.
+/// </summary>
 public static class ComPort
 {
     private static SerialPort serialPort;
 
+    /// <summary>
+    /// Попытаться установить соединение с COM-портом.
+    /// </summary>
+    /// <param name="comPortNumber">Номер COM-порта (по умолчанию 3).</param>
+    /// <param name="baudRate">Скорость передачи данных (по умолчанию 115200 бит/с).</param>
+    /// <param name="dataBits">Количество бит данных (по умолчанию 8).</param>
+    /// <param name="stopBits">Стоп-биты (по умолчанию StopBits.One).</param>
+    /// <returns>True, если соединение успешно установлено, иначе - false.</returns>
     public static bool TryConnect(int comPortNumber = 3, int baudRate = 115200, int dataBits = 8,
         StopBits stopBits = StopBits.One)
     {
@@ -31,6 +42,9 @@ public static class ComPort
         return true;
     }
 
+    /// <summary>
+    /// Разорвать соединение с COM-портом.
+    /// </summary>
     public static void Disconnect()
     {
         try
@@ -46,6 +60,10 @@ public static class ComPort
         }
     }
 
+    /// <summary>
+    /// Отправить строку данных через COM-порт.
+    /// </summary>
+    /// <param name="s">Строка данных для отправки.</param>
     public static void Write(string s)
     {
         try
@@ -61,6 +79,10 @@ public static class ComPort
         }
     }
 
+    /// <summary>
+    /// Отправить байтовый массив данных через COM-порт.
+    /// </summary>
+    /// <param name="bytes">Байтовый массив данных для отправки.</param>
     public static void Write(byte[] bytes)
     {
         try
@@ -76,6 +98,10 @@ public static class ComPort
         }
     }
 
+    /// <summary>
+    /// Проверить, открыто ли соединение с COM-портом.
+    /// </summary>
+    /// <returns>True, если соединение открыто, иначе - false.</returns>
     public static bool IsOpen()
     {
         try
