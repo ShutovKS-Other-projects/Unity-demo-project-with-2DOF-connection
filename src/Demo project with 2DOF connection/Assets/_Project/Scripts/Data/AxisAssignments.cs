@@ -43,15 +43,15 @@ namespace Data
         private AxisDofData[] _axisDofs;
         private AxisDofData[] _axisDofs2;
 
-        private Cls_Filters[] _clsFilters = new Cls_Filters[48];
-        private Cls_Filters[] _clsFilters2 = new Cls_Filters[48];
+        private ClsFilters[] _clsFilters = new ClsFilters[48];
+        private ClsFilters[] _clsFilters2 = new ClsFilters[48];
 
         public AxisAssignments()
         {
             for (var index = 0; index < 48; ++index)
             {
-                _clsFilters[index] = new Cls_Filters();
-                _clsFilters2[index] = new Cls_Filters();
+                _clsFilters[index] = new ClsFilters();
+                _clsFilters2[index] = new ClsFilters();
             }
         }
 
@@ -115,8 +115,8 @@ namespace Data
                 _clsFilters[index].SetSmoothingValue(axisDofs[index].Smoothing);
                 _clsFilters[index].SetSmoothingValueSim(axisDofs[index].SmoothingSim);
                 _clsFilters[index].SetNonlinearValue(axisDofs[index].Nonlinear);
-                _clsFilters[index].SetDeadzoneValue(axisDofs[index].DeathZone);
-                _clsFilters[index].SetDeadzoneToZeroValue(axisDofs[index].DeathToZero);
+                _clsFilters[index].SetDeadZoneValue(axisDofs[index].DeathZone);
+                _clsFilters[index].SetDeadZoneToZeroValue(axisDofs[index].DeathToZero);
                 _clsFilters[index].SetDeadToZeroTimeValue(axisDofs[index].DeathToZeroTime);
                 _clsFilters[index].SetDeadToZeroIntervalValue(axisDofs[index].DeathToZeroInterval);
 
@@ -163,7 +163,7 @@ namespace Data
                         break;
                 }
 
-                _clsFilters[index].SetAntirollValue(axisDofs[index].AntiRoll, minValue, maxValue);
+                _clsFilters[index].SetAntiRollValue(axisDofs[index].AntiRoll, minValue, maxValue);
             }
 
             for (var index = 0; index < 48; ++index)
@@ -171,8 +171,8 @@ namespace Data
                 _clsFilters2[index].SetSmoothingValue(axisDofs2[index].Smoothing);
                 _clsFilters2[index].SetSmoothingValueSim(axisDofs2[index].SmoothingSim);
                 _clsFilters2[index].SetNonlinearValue(axisDofs2[index].Nonlinear);
-                _clsFilters2[index].SetDeadzoneValue(axisDofs2[index].DeathZone);
-                _clsFilters2[index].SetDeadzoneToZeroValue(axisDofs2[index].DeathToZero);
+                _clsFilters2[index].SetDeadZoneValue(axisDofs2[index].DeathZone);
+                _clsFilters2[index].SetDeadZoneToZeroValue(axisDofs2[index].DeathToZero);
                 _clsFilters2[index].SetDeadToZeroTimeValue(axisDofs2[index].DeathToZeroTime);
                 _clsFilters2[index].SetDeadToZeroIntervalValue(axisDofs2[index].DeathToZeroInterval);
 
@@ -219,7 +219,7 @@ namespace Data
                         break;
                 }
 
-                _clsFilters2[index].SetAntirollValue(axisDofs2[index].AntiRoll, minValue, maxValue);
+                _clsFilters2[index].SetAntiRollValue(axisDofs2[index].AntiRoll, minValue, maxValue);
             }
         }
 
@@ -321,7 +321,7 @@ namespace Data
             double surge, double extra1, double extra2, double extra3)
         {
             AxisDofData[] axisDofDataArray;
-            Cls_Filters[] clsFiltersArray;
+            ClsFilters[] clsFiltersArray;
 
             var num1 = 0.0;
             if (index < 48)
@@ -355,14 +355,14 @@ namespace Data
             if (!startDeadZoneToZero)
             {
                 var plusMinus = false;
-                num2 = clsFiltersArray[index].smoothingPlusMinus(num2, ref plusMinus);
+                num2 = clsFiltersArray[index].SmoothingPlusMinus(num2, ref plusMinus);
                 if (!plusMinus)
                 {
                     var startAntiRoll = false;
-                    num2 = clsFiltersArray[index].antiroll(num2, ref startAntiRoll);
+                    num2 = clsFiltersArray[index].AntiRoll(num2, ref startAntiRoll);
                     if (!startAntiRoll)
                     {
-                        var num3 = clsFiltersArray[index].smoothing(num2);
+                        var num3 = clsFiltersArray[index].Smoothing(num2);
                         num2 = clsFiltersArray[index].smoothing_sim(num3);
                     }
                 }
