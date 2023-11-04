@@ -115,7 +115,7 @@ namespace Data
                 _clsFilters[index].SetSmoothingValue(axisDofs[index].Smoothing);
                 _clsFilters[index].SetSmoothingValueSim(axisDofs[index].SmoothingSim);
                 _clsFilters[index].SetNonlinearValue(axisDofs[index].Nonlinear);
-                _clsFilters[index].SetDeadzoneValue(axisDofs[index].Deathzone);
+                _clsFilters[index].SetDeadzoneValue(axisDofs[index].DeathZone);
                 _clsFilters[index].SetDeadzoneToZeroValue(axisDofs[index].DeathToZero);
                 _clsFilters[index].SetDeadToZeroTimeValue(axisDofs[index].DeathToZeroTime);
                 _clsFilters[index].SetDeadToZeroIntervalValue(axisDofs[index].DeathToZeroInterval);
@@ -163,7 +163,7 @@ namespace Data
                         break;
                 }
 
-                _clsFilters[index].SetAntirollValue(axisDofs[index].Antiroll, minValue, maxValue);
+                _clsFilters[index].SetAntirollValue(axisDofs[index].AntiRoll, minValue, maxValue);
             }
 
             for (var index = 0; index < 48; ++index)
@@ -171,7 +171,7 @@ namespace Data
                 _clsFilters2[index].SetSmoothingValue(axisDofs2[index].Smoothing);
                 _clsFilters2[index].SetSmoothingValueSim(axisDofs2[index].SmoothingSim);
                 _clsFilters2[index].SetNonlinearValue(axisDofs2[index].Nonlinear);
-                _clsFilters2[index].SetDeadzoneValue(axisDofs2[index].Deathzone);
+                _clsFilters2[index].SetDeadzoneValue(axisDofs2[index].DeathZone);
                 _clsFilters2[index].SetDeadzoneToZeroValue(axisDofs2[index].DeathToZero);
                 _clsFilters2[index].SetDeadToZeroTimeValue(axisDofs2[index].DeathToZeroTime);
                 _clsFilters2[index].SetDeadToZeroIntervalValue(axisDofs2[index].DeathToZeroInterval);
@@ -219,7 +219,7 @@ namespace Data
                         break;
                 }
 
-                _clsFilters2[index].SetAntirollValue(axisDofs2[index].Antiroll, minValue, maxValue);
+                _clsFilters2[index].SetAntirollValue(axisDofs2[index].AntiRoll, minValue, maxValue);
             }
         }
 
@@ -417,7 +417,7 @@ namespace Data
         {
             for (var index = 0; index < 48; ++index)
             {
-                if (_axisDofs[index].Force == force && _axisDofs[index].Antiroll != 0)
+                if (_axisDofs[index].Force == force && _axisDofs[index].AntiRoll != 0)
                 {
                     return true;
                 }
