@@ -5,7 +5,6 @@ namespace Data
     [Serializable]
     public class GameSettingsData
     {
-        public string GameName { get; set; }
         public double MaxRoll { get; set; }
         public double MinRoll { get; set; }
         public double MaxPitch { get; set; }
@@ -24,13 +23,14 @@ namespace Data
         public double MinExtra2 { get; set; }
         public double MaxExtra3 { get; set; }
         public double MinExtra3 { get; set; }
+        public int WindProc { get; set; }
+        
 
-        public GameSettingsData(string gameName, double maxRoll, double minRoll, double maxPitch, double minPitch,
+        public GameSettingsData(double maxRoll, double minRoll, double maxPitch, double minPitch,
             double maxYaw, double minYaw, double maxHeave, double minHeave, double maxSway, double minSway,
             double maxSurge, double minSurge, double maxExtra1, double minExtra1, double maxExtra2, double minExtra2,
-            double maxExtra3, double minExtra3)
+            double maxExtra3, double minExtra3, int windProc)
         {
-            GameName = gameName;
             MaxRoll = maxRoll;
             MinRoll = minRoll;
             MaxPitch = maxPitch;
@@ -49,6 +49,7 @@ namespace Data
             MinExtra2 = minExtra2;
             MaxExtra3 = maxExtra3;
             MinExtra3 = minExtra3;
+            WindProc = windProc;
         }
     }
 }

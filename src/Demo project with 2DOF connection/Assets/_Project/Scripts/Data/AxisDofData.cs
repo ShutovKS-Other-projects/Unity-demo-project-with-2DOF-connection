@@ -5,7 +5,6 @@ namespace Data
     [Serializable]
     public class AxisDofData
     {
-        public string GameName { get; set; }
         public byte AxisIndex { get; set; }
         public bool Dir { get; set; }
         public string Force { get; set; }
@@ -19,9 +18,8 @@ namespace Data
         public int DeathToZeroTime { get; set; }
         public int DeathToZeroInterval { get; set; }
 
-        public AxisDofData(string gameName, byte axisIndex)
+        public AxisDofData(byte axisIndex)
         {
-            GameName = gameName;
             AxisIndex = axisIndex;
             Dir = false;
             Force = "";
