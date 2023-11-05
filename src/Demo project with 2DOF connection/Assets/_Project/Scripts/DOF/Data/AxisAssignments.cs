@@ -1,81 +1,22 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Linq;
 
-namespace Data
+#endregion
+
+namespace DOF.Data
 {
     /// <summary>
-    /// Класс AxisAssignments представляет собой контейнер для настроек и обработки данных по осям.
+    ///     Класс AxisAssignments представляет собой контейнер для настроек и обработки данных по осям.
     /// </summary>
     public class AxisAssignments
     {
-        // Приватное поле для коэффициента влияния ветра.
-        private int _coefWind;
-
-        // Приватное поле для типа влияния ветра.
-        private int _typeWind;
-
-        // Приватное поле для процента влияния ветра.
-        private double _procWind;
-
-        // Приватное поле для хранения значений по осям.
-        private double[] _axis = new double[9];
-
         // Приватное поле, указывающее на наличие абсолютных значений для каждой оси.
         private bool[] _absValues = new bool[8];
 
-        // Приватное поле для минимального значения по тангажу.
-        private double _minPitch;
-
-        // Приватное поле для максимального значения по тангажу.
-        private double _maxPitch;
-
-        // Приватное поле для минимального значения по крену.
-        private double _minRoll;
-
-        // Приватное поле для максимального значения по крену.
-        private double _maxRoll;
-
-        // Приватное поле для минимального значения по рысканию.
-        private double _minYaw;
-
-        // Приватное поле для максимального значения по рысканию.
-        private double _maxYaw;
-
-        // Приватное поле для минимального значения по продольному движению.
-        private double _minSurge;
-
-        // Приватное поле для максимального значения по продольному движению.
-        private double _maxSurge;
-
-        // Приватное поле для минимального значения по поперечному движению.
-        private double _minSway;
-
-        // Приватное поле для максимального значения по поперечному движению.
-        private double _maxSway;
-
-        // Приватное поле для минимального значения по вертикальному движению.
-        private double _minHeave;
-
-        // Приватное поле для максимального значения по вертикальному движению.
-        private double _maxHeave;
-
-        // Приватное поле для минимального значения дополнительной оси 1.
-        private double _minExtra1;
-
-        // Приватное поле для максимального значения дополнительной оси 1.
-        private double _maxExtra1;
-
-        // Приватное поле для минимального значения дополнительной оси 2.
-        private double _minExtra2;
-
-        // Приватное поле для максимального значения дополнительной оси 2.
-        private double _maxExtra2;
-
-        // Приватное поле для минимального значения дополнительной оси 3.
-        private double _minExtra3;
-
-        // Приватное поле для максимального значения дополнительной оси 3.
-        private double _maxExtra3;
+        // Приватное поле для хранения значений по осям.
+        private readonly double[] _axis = new double[9];
 
         // Приватное поле для хранения данных по осям.
         private AxisDofData[] _axisDofs;
@@ -84,13 +25,76 @@ namespace Data
         private AxisDofData[] _axisDofs2;
 
         // Приватное поле для хранения объектов ClsFilters.
-        private ClsFilters[] _clsFilters = new ClsFilters[48];
+        private readonly ClsFilters[] _clsFilters = new ClsFilters[48];
 
         // Приватное поле для хранения второго набора объектов ClsFilters.
-        private ClsFilters[] _clsFilters2 = new ClsFilters[48];
+        private readonly ClsFilters[] _clsFilters2 = new ClsFilters[48];
+
+        // Приватное поле для коэффициента влияния ветра.
+        private int _coefWind;
+
+        // Приватное поле для максимального значения дополнительной оси 1.
+        private double _maxExtra1;
+
+        // Приватное поле для максимального значения дополнительной оси 2.
+        private double _maxExtra2;
+
+        // Приватное поле для максимального значения дополнительной оси 3.
+        private double _maxExtra3;
+
+        // Приватное поле для максимального значения по вертикальному движению.
+        private double _maxHeave;
+
+        // Приватное поле для максимального значения по тангажу.
+        private double _maxPitch;
+
+        // Приватное поле для максимального значения по крену.
+        private double _maxRoll;
+
+        // Приватное поле для максимального значения по продольному движению.
+        private double _maxSurge;
+
+        // Приватное поле для максимального значения по поперечному движению.
+        private double _maxSway;
+
+        // Приватное поле для максимального значения по рысканию.
+        private double _maxYaw;
+
+        // Приватное поле для минимального значения дополнительной оси 1.
+        private double _minExtra1;
+
+        // Приватное поле для минимального значения дополнительной оси 2.
+        private double _minExtra2;
+
+        // Приватное поле для минимального значения дополнительной оси 3.
+        private double _minExtra3;
+
+        // Приватное поле для минимального значения по вертикальному движению.
+        private double _minHeave;
+
+        // Приватное поле для минимального значения по тангажу.
+        private double _minPitch;
+
+        // Приватное поле для минимального значения по крену.
+        private double _minRoll;
+
+        // Приватное поле для минимального значения по продольному движению.
+        private double _minSurge;
+
+        // Приватное поле для минимального значения по поперечному движению.
+        private double _minSway;
+
+        // Приватное поле для минимального значения по рысканию.
+        private double _minYaw;
+
+        // Приватное поле для процента влияния ветра.
+        private double _procWind;
+
+        // Приватное поле для типа влияния ветра.
+        private int _typeWind;
 
         /// <summary>
-        /// Конструктор по умолчанию, инициализирует объект AxisAssignments.
+        ///     Конструктор по умолчанию, инициализирует объект AxisAssignments.
         /// </summary>
         public AxisAssignments()
         {
@@ -102,7 +106,7 @@ namespace Data
         }
 
         /// <summary>
-        /// Освобождает ресурсы, связанные с объектами ClsFilters.
+        ///     Освобождает ресурсы, связанные с объектами ClsFilters.
         /// </summary>
         public void Free()
         {
@@ -114,7 +118,7 @@ namespace Data
         }
 
         /// <summary>
-        /// Устанавливает настройки осей и связанных с ними параметров.
+        ///     Устанавливает настройки осей и связанных с ними параметров.
         /// </summary>
         /// <param name="axisDofs">Массив данных по осям.</param>
         /// <param name="axisDofs2">Второй массив данных по осям.</param>
@@ -171,18 +175,16 @@ namespace Data
 
             _absValues = new bool[8];
 
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
-                int startIndex = i * 6;
+                var startIndex = i * 6;
                 _absValues[i] = false;
-                for (int j = startIndex; j < startIndex + 6; j++)
-                {
+                for (var j = startIndex; j < startIndex + 6; j++)
                     if (axisDofs[j].Force == "Wind")
                     {
                         _absValues[i] = true;
                         break;
                     }
-                }
             }
 
             for (var index = 0; index < 48; ++index)
@@ -299,7 +301,7 @@ namespace Data
         }
 
         /// <summary>
-        /// Обрабатывает данные по осям и вычисляет итоговые значения.
+        ///     Обрабатывает данные по осям и вычисляет итоговые значения.
         /// </summary>
         /// <param name="pitch">Значение по тангажу.</param>
         /// <param name="roll">Значение по крену.</param>
@@ -368,10 +370,7 @@ namespace Data
                 if (extra3 < _minExtra3) extra3 = _minExtra3;
             }
 
-            if (_axisDofs == null)
-            {
-                return;
-            }
+            if (_axisDofs == null) return;
 
             var axisIndices = new[] { 0, 1, 2, 3, 4, 5, 48, 49, 50, 51, 52, 53 };
             var axisIndices2 = new[] { 6, 7, 8, 9, 10, 11, 54, 55, 56, 57, 58, 59 };
@@ -406,7 +405,7 @@ namespace Data
         }
 
         /// <summary>
-        /// Получает значение по указанной оси и применяет к нему фильтры и настройки.
+        ///     Получает значение по указанной оси и применяет к нему фильтры и настройки.
         /// </summary>
         /// <param name="index">Индекс оси в массиве данных по осям.</param>
         /// <param name="pitch">Значение по тангажу.</param>
@@ -484,26 +483,20 @@ namespace Data
                 _ => num2
             };
 
-            if (axisDofDataArray[index].Dir)
-            {
-                num2 *= -1.0;
-            }
+            if (axisDofDataArray[index].Dir) num2 *= -1.0;
 
             return num2 * (0.01 * axisDofDataArray[index].Proc);
         }
 
         /// <summary>
-        /// Получает значение по указанной оси и информацию о наличии абсолютных значений.
+        ///     Получает значение по указанной оси и информацию о наличии абсолютных значений.
         /// </summary>
         /// <param name="axisNumber">Номер оси.</param>
         /// <param name="absValue">Информация о наличии абсолютных значений.</param>
         /// <returns>Значение оси.</returns>
         public double GetAxis(int axisNumber, ref bool absValue)
         {
-            if (axisNumber < 0 || axisNumber >= _axis.Length)
-            {
-                throw new ArgumentOutOfRangeException($"{axisNumber}");
-            }
+            if (axisNumber < 0 || axisNumber >= _axis.Length) throw new ArgumentOutOfRangeException($"{axisNumber}");
 
             absValue = _absValues[axisNumber];
             var axisValue = _axis[axisNumber];
@@ -516,7 +509,7 @@ namespace Data
         }
 
         /// <summary>
-        /// Получает значение девятой оси.
+        ///     Получает значение девятой оси.
         /// </summary>
         /// <returns>Значение девятой оси.</returns>
         public double GetAxis9()
@@ -524,21 +517,17 @@ namespace Data
             var axisValue = _axis[8];
             return axisValue > 999.0 ? 999.0 : axisValue;
         }
-        
+
         /// <summary>
-        /// Метод определяет, включена ли антикреновая система для указанной силы.
+        ///     Метод определяет, включена ли антикреновая система для указанной силы.
         /// </summary>
         /// <param name="force">Имя силы (например, "pitch", "roll").</param>
         /// <returns>True, если антикреновая система включена для данной силы, иначе - False.</returns>
         private bool IsAntiRollEnabledForForce(string force)
         {
             for (var index = 0; index < 48; ++index)
-            {
                 if (_axisDofs[index].Force == force && _axisDofs[index].AntiRoll != 0)
-                {
                     return true;
-                }
-            }
 
             return false;
         }
