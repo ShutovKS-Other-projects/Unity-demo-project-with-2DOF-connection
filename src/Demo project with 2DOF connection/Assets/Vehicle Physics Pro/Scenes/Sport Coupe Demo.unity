@@ -1640,6 +1640,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: VPP Sport Coupe
       objectReference: {fileID: 0}
+    - target: {fileID: 2069814030545375926, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
+      propertyPath: m_ImplicitCom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2069814030545375926, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
+      propertyPath: m_CenterOfMass.x
+      value: 0.000000059604645
+      objectReference: {fileID: 0}
+    - target: {fileID: 2069814030545375926, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
+      propertyPath: m_CenterOfMass.y
+      value: 0.365
+      objectReference: {fileID: 0}
+    - target: {fileID: 2069814030545375926, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
+      propertyPath: m_CenterOfMass.z
+      value: 0.49800116
+      objectReference: {fileID: 0}
     - target: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -1694,7 +1710,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1610903236}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2069814030545375925, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1799665147}
   m_SourcePrefab: {fileID: 100100000, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
 --- !u!4 &172037548 stripped
 Transform:
@@ -5056,6 +5075,11 @@ CanvasRenderer:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6825728240663273301, guid: e5682ca1fe94a03449dc3d9ac69945f7, type: 3}
   m_PrefabInstance: {fileID: 3877802113771440485}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &848758808 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2069814030545375925, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
+  m_PrefabInstance: {fileID: 172037547}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &877678562
 GameObject:
@@ -9330,7 +9354,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2069814030545375922, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
   m_PrefabInstance: {fileID: 172037547}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 848758808}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -1898320663, guid: b8873f7cd5fec6f49a4b37228b9b23ac, type: 3}
@@ -9341,6 +9365,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
   m_PrefabInstance: {fileID: 172037547}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1799665147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848758808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3062658e8f174803a583ed9f510e8f3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vehicleTransform: {fileID: 1799665140}
+  updateInterval: 0.1
 --- !u!1 &1802595683
 GameObject:
   m_ObjectHideFlags: 0
