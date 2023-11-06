@@ -1,4 +1,4 @@
-namespace DOF.Data
+namespace DOF.Data.Dynamic
 {
     public class ObjectTelemetryData
     {
