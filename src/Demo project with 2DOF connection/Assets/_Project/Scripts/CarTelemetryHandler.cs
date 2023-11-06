@@ -1,4 +1,5 @@
 using DOF.Data;
+using DOF.Data.Dynamic;
 using UnityEngine;
 
 public class CarTelemetryHandler : MonoBehaviour
