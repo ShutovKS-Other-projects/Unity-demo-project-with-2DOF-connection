@@ -38,7 +38,7 @@ namespace DOF.Data
         public GameSettingsData(double maxRoll, double minRoll, double maxPitch, double minPitch,
             double maxYaw, double minYaw, double maxHeave, double minHeave, double maxSway, double minSway,
             double maxSurge, double minSurge, double maxExtra1, double minExtra1, double maxExtra2, double minExtra2,
-            double maxExtra3, double minExtra3, int windProc)
+            double maxExtra3, double minExtra3, int windProc = 0)
         {
             MaxRoll = maxRoll;
             MinRoll = minRoll;
@@ -159,28 +159,5 @@ namespace DOF.Data
         ///     Количество процессоров ветра, используемых в игре.
         /// </summary>
         public int WindProc { get; set; }
-
-        public static GameSettingsData Default => new()
-        {
-            MaxRoll = 0,
-            MinRoll = 3.390625,
-            MaxPitch = 0,
-            MinPitch = -3.390625,
-            MaxYaw = 0,
-            MinYaw = -3.390625,
-            MaxHeave = 0,
-            MinHeave = 3.390625,
-            MaxSway = 0,
-            MinSway = 3.390625,
-            MaxSurge = 0,
-            MinSurge = -3.390625,
-            MaxExtra1 = 0,
-            MinExtra1 = 3.390625,
-            MaxExtra2 = 0,
-            MinExtra2 = -3.390625,
-            MaxExtra3 = 0,
-            MinExtra3 = 3.390625,
-            WindProc = 0
-        };
     }
 }

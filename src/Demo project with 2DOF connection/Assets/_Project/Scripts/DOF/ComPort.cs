@@ -1,6 +1,6 @@
 #region
 
-using System.IO.Ports;
+using RJCP.IO.Ports;
 
 #endregion
 
@@ -11,7 +11,7 @@ namespace DOF
     /// </summary>
     public static class ComPort
     {
-        private static SerialPort serialPort;
+        private static SerialPortStream serialPort;
 
         /// <summary>
         ///     Попытаться установить соединение с COM-портом.
@@ -24,7 +24,7 @@ namespace DOF
         public static bool TryConnect(int comPortNumber = 3, int baudRate = 115200, int dataBits = 8,
             StopBits stopBits = StopBits.One)
         {
-            serialPort = new SerialPort
+            serialPort = new SerialPortStream
             {
                 BaudRate = baudRate,
                 DataBits = dataBits,

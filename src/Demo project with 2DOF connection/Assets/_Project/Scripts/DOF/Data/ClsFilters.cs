@@ -341,7 +341,7 @@ namespace DOF.Data
 
             _th = new Thread(() =>
             {
-                while (Settings.isRunning)
+                while (Settings.IsRunning)
                 {
                     _outputValueSim = emaLP_of_emaLP_of_emaLP(_inputValueSim);
 
@@ -363,7 +363,7 @@ namespace DOF.Data
 
             _thDeadZoneToZero = new Thread(() =>
             {
-                while (Settings.isRunning)
+                while (Settings.IsRunning)
                 {
                     _outputValueDeadZoneToZeroSim =
                         emaLP_of_emaLP_of_emaLP_deathZone_toZero(INPUT_VALUE_DEAD_ZONE_TO_ZERO_SIM);
@@ -386,7 +386,7 @@ namespace DOF.Data
 
             _thAntiRoll = new Thread(() =>
             {
-                while (Settings.isRunning)
+                while (Settings.IsRunning)
                 {
                     _outputValueAntiRollSim = emaLP_of_emaLP_of_emaLP_antiRoll(_inputValueAntiRollSim);
 

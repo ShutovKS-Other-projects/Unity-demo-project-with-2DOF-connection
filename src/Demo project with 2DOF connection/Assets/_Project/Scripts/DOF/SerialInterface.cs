@@ -151,29 +151,29 @@ namespace DOF
 
                 var axisDofDataArray = new[]
                 {
-                    Settings.gameAxes.Where(x => x.AxisIndex == 0).ToArray(),
-                    Settings.gameAxes.Where(x => x.AxisIndex == 1).ToArray(),
-                    Settings.gameAxes2.Where(x => x.AxisIndex == 0).ToArray(),
-                    Settings.gameAxes2.Where(x => x.AxisIndex == 1).ToArray()
+                    Settings.AxisDofData1.Where(x => x.AxisIndex == 0).ToArray(),
+                    Settings.AxisDofData1.Where(x => x.AxisIndex == 1).ToArray(),
+                    Settings.AxisDofData2.Where(x => x.AxisIndex == 0).ToArray(),
+                    Settings.AxisDofData2.Where(x => x.AxisIndex == 1).ToArray()
                 };
 
-                var gameSetting = Settings.GameSettingsData;
+                var gameSetting = Settings.GameSettings;
 
-                _axisAssignmentsA.SetAxisDofs(axisDofDataArray[0], axisDofDataArray[2], gameSetting.MinPitch,
-                    gameSetting.MaxPitch, gameSetting.MinRoll, gameSetting.MaxRoll, gameSetting.MinYaw,
-                    gameSetting.MaxYaw,
-                    gameSetting.MinSurge, gameSetting.MaxSurge, gameSetting.MinSway, gameSetting.MaxSway,
-                    gameSetting.MinHeave, gameSetting.MaxHeave, gameSetting.MinExtra1, gameSetting.MaxExtra1,
-                    gameSetting.MinExtra2, gameSetting.MaxExtra2, gameSetting.MinExtra3, gameSetting.MaxExtra3,
-                    gameSetting.WindProc, Settings.windCoefValue, Settings.windConst ? 1 : 0);
+                _axisAssignmentsA.SetAxisDofs(axisDofDataArray[0], axisDofDataArray[2],
+                    gameSetting.MinPitch, gameSetting.MaxPitch, gameSetting.MinRoll, gameSetting.MaxRoll,
+                    gameSetting.MinYaw, gameSetting.MaxYaw, gameSetting.MinSurge, gameSetting.MaxSurge,
+                    gameSetting.MinSway, gameSetting.MaxSway, gameSetting.MinHeave, gameSetting.MaxHeave,
+                    gameSetting.MinExtra1, gameSetting.MaxExtra1, gameSetting.MinExtra2, gameSetting.MaxExtra2,
+                    gameSetting.MinExtra3, gameSetting.MaxExtra3, gameSetting.WindProc, Settings.WindCoefValue,
+                    Settings.WindConst ? 1 : 0);
 
-                _axisAssignmentsB.SetAxisDofs(axisDofDataArray[1], axisDofDataArray[3], gameSetting.MinPitch,
-                    gameSetting.MaxPitch, gameSetting.MinRoll, gameSetting.MaxRoll, gameSetting.MinYaw,
-                    gameSetting.MaxYaw,
-                    gameSetting.MinSurge, gameSetting.MaxSurge, gameSetting.MinSway, gameSetting.MaxSway,
-                    gameSetting.MinHeave, gameSetting.MaxHeave, gameSetting.MinExtra1, gameSetting.MaxExtra1,
-                    gameSetting.MinExtra2, gameSetting.MaxExtra2, gameSetting.MinExtra3, gameSetting.MaxExtra3,
-                    gameSetting.WindProc, Settings.windCoefValue, Settings.windConst ? 1 : 0);
+                _axisAssignmentsB.SetAxisDofs(axisDofDataArray[1], axisDofDataArray[3],
+                    gameSetting.MinPitch, gameSetting.MaxPitch, gameSetting.MinRoll, gameSetting.MaxRoll,
+                    gameSetting.MinYaw, gameSetting.MaxYaw, gameSetting.MinSurge, gameSetting.MaxSurge,
+                    gameSetting.MinSway, gameSetting.MaxSway, gameSetting.MinHeave, gameSetting.MaxHeave,
+                    gameSetting.MinExtra1, gameSetting.MaxExtra1, gameSetting.MinExtra2, gameSetting.MaxExtra2,
+                    gameSetting.MinExtra3, gameSetting.MaxExtra3, gameSetting.WindProc, Settings.WindCoefValue,
+                    Settings.WindConst ? 1 : 0);
             }
             else
             {
@@ -314,7 +314,7 @@ namespace DOF
                         _lastAxisA[8] = _axisAssignmentsA.GetAxis9();
                         _lastAxisB[8] = _axisAssignmentsB.GetAxis9();
                     }
-                    else if (Settings.shutdownValue == 0)
+                    else if (Settings.ShutdownValue == 0)
                     {
                         for (var i = 0; i < 9; i++)
                         {
@@ -346,7 +346,7 @@ namespace DOF
                             {
                                 if (_lastAxisA[i] > 0.0)
                                 {
-                                    _lastAxisA[i] -= (101 - Settings.shutdownValue) / 10000.0;
+                                    _lastAxisA[i] -= (101 - Settings.ShutdownValue) / 10000.0;
                                     if (_lastAxisA[i] < 0.0)
                                     {
                                         _lastAxisA[i] = 0.0;
@@ -354,7 +354,7 @@ namespace DOF
                                 }
                                 else
                                 {
-                                    _lastAxisA[i] += (101 - Settings.shutdownValue) / 10000.0;
+                                    _lastAxisA[i] += (101 - Settings.ShutdownValue) / 10000.0;
                                     if (_lastAxisA[i] > 0.0)
                                     {
                                         _lastAxisA[i] = 0.0;
@@ -366,7 +366,7 @@ namespace DOF
                             {
                                 if (_lastAxisB[i] > 0.0)
                                 {
-                                    _lastAxisB[i] -= (101 - Settings.shutdownValue) / 10000.0;
+                                    _lastAxisB[i] -= (101 - Settings.ShutdownValue) / 10000.0;
                                     if (_lastAxisB[i] < 0.0)
                                     {
                                         _lastAxisB[i] = 0.0;
@@ -374,7 +374,7 @@ namespace DOF
                                 }
                                 else
                                 {
-                                    _lastAxisB[i] += (101 - Settings.shutdownValue) / 10000.0;
+                                    _lastAxisB[i] += (101 - Settings.ShutdownValue) / 10000.0;
                                     if (_lastAxisB[i] > 0.0)
                                     {
                                         _lastAxisB[i] = 0.0;
