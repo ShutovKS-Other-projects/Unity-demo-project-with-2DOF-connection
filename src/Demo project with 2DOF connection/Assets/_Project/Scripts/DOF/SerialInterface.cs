@@ -16,14 +16,18 @@ namespace DOF
     public class SerialInterface
     {
         /// <summary>
-        ///     Последние измеренные значения оси A (для каждого мотора).
+        ///     Конструктор класса SerialInterface, инициализирующий объект для взаимодействия с устройством.
         /// </summary>
-        private readonly double[] _lastAxisA = new double[9];
+        /// <param name="interfaceSerialData">Данные о последовательном порту.</param>
+        /// <param name="gameTelemetry">Данные о телеметрии игры.</param>
+        public SerialInterface(InterfaceSerialData interfaceSerialData, GameTelemetry gameTelemetry)
+        {
+            _interfaceSerialData = interfaceSerialData;
+            _gameTelemetry = gameTelemetry;
 
-        /// <summary>
-        ///     Последние измеренные значения оси B (для каждого мотора).
-        /// </summary>
-        private readonly double[] _lastAxisB = new double[9];
+            StartComPort();
+            Start();
+        }
 
         /// <summary>
         ///     Приватное поле для хранения объекта AxisAssignments, представляющего назначения осей движения для группы A моторов.
@@ -36,11 +40,6 @@ namespace DOF
         private readonly AxisAssignments _axisAssignmentsB = new();
 
         /// <summary>
-        ///     Приватное поле для указания на приостановку игры.
-        /// </summary>
-        private bool _gamePaused;
-
-        /// <summary>
         ///     Данные о телеметрии игры для взаимодействия с устройством.
         /// </summary>
         private readonly GameTelemetry _gameTelemetry;
@@ -49,6 +48,26 @@ namespace DOF
         ///     Данные о последовательном порту для взаимодействия с устройством.
         /// </summary>
         private readonly InterfaceSerialData _interfaceSerialData;
+
+        /// <summary>
+        ///     Последние измеренные значения оси A (для каждого мотора).
+        /// </summary>
+        private readonly double[] _lastAxisA = new double[9];
+
+        /// <summary>
+        ///     Последние измеренные значения оси B (для каждого мотора).
+        /// </summary>
+        private readonly double[] _lastAxisB = new double[9];
+
+        /// <summary>
+        ///     Приватное поле для указания завершения работы класса.
+        /// </summary>
+        private readonly bool _terminated = false;
+
+        /// <summary>
+        ///     Приватное поле для указания на приостановку игры.
+        /// </summary>
+        private bool _gamePaused;
 
         /// <summary>
         ///     Приватное поле для хранения последнего времени изменения данных.
@@ -91,25 +110,6 @@ namespace DOF
         private bool _stopPlatformMode;
 
         /// <summary>
-        ///     Приватное поле для указания завершения работы класса.
-        /// </summary>
-        private readonly bool _terminated = false;
-
-        /// <summary>
-        ///     Конструктор класса SerialInterface, инициализирующий объект для взаимодействия с устройством.
-        /// </summary>
-        /// <param name="interfaceSerialData">Данные о последовательном порту.</param>
-        /// <param name="gameTelemetry">Данные о телеметрии игры.</param>
-        public SerialInterface(InterfaceSerialData interfaceSerialData, GameTelemetry gameTelemetry)
-        {
-            _interfaceSerialData = interfaceSerialData;
-            _gameTelemetry = gameTelemetry;
-
-            StartComPort();
-            Start();
-        }
-
-        /// <summary>
         ///     Приватное поле для хранения строки данных SData.
         /// </summary>
         private string SData { get; set; }
@@ -141,7 +141,10 @@ namespace DOF
             {
                 _stop = false;
 
-                if (!_stopPlatformMode) StartComPort();
+                if (!_stopPlatformMode)
+                {
+                    StartComPort();
+                }
 
                 _stopPlatformMode = false;
                 _gamePaused = false;
@@ -193,7 +196,10 @@ namespace DOF
                 "<Motor6b>", "<Motor7b>", "<Motor8b>", "<Motor9b>"
             };
 
-            for (var index = 0; index < 18; ++index) indAxis[index] = -1;
+            for (var index = 0; index < 18; ++index)
+            {
+                indAxis[index] = -1;
+            }
 
             foreach (var motorSubstring in motorSubstrings)
             {
@@ -223,7 +229,10 @@ namespace DOF
         /// <returns>Массив байт в формате ASCII.</returns>
         private byte[] GetDecimalBytes(int value)
         {
-            if (value > 999) value = 999;
+            if (value > 999)
+            {
+                value = 999;
+            }
 
             return Encoding.ASCII.GetBytes(value.ToString("000"));
         }
@@ -239,12 +248,17 @@ namespace DOF
         private void DetectPauseGame(double pitch, double roll, double yaw, double sway, double surge)
         {
             if (pitch != _lastPitch || roll != _lastRoll || yaw != _lastYaw || surge != _lastSurge || sway != _lastSway)
+            {
                 _lastChangeTime = DateTime.Now;
+            }
 
             if ((pitch != 0.0 || roll != 0.0 || yaw != 0.0 || sway != 0.0 || surge != 0.0) &&
                 (DateTime.Now - _lastChangeTime).TotalSeconds > 3.0)
             {
-                if (!_gamePaused) _gamePaused = true;
+                if (!_gamePaused)
+                {
+                    _gamePaused = true;
+                }
             }
             else if (_gamePaused)
             {
@@ -312,9 +326,15 @@ namespace DOF
                     {
                         for (var i = 0; i < 8; i++)
                         {
-                            if (absValues[i]) _lastAxisA[i] = 0.0;
+                            if (absValues[i])
+                            {
+                                _lastAxisA[i] = 0.0;
+                            }
 
-                            if (absValues[i + 8]) _lastAxisB[i] = 0.0;
+                            if (absValues[i + 8])
+                            {
+                                _lastAxisB[i] = 0.0;
+                            }
                         }
 
                         _lastAxisA[8] = 0.0;
@@ -327,12 +347,18 @@ namespace DOF
                                 if (_lastAxisA[i] > 0.0)
                                 {
                                     _lastAxisA[i] -= (101 - Settings.shutdownValue) / 10000.0;
-                                    if (_lastAxisA[i] < 0.0) _lastAxisA[i] = 0.0;
+                                    if (_lastAxisA[i] < 0.0)
+                                    {
+                                        _lastAxisA[i] = 0.0;
+                                    }
                                 }
                                 else
                                 {
                                     _lastAxisA[i] += (101 - Settings.shutdownValue) / 10000.0;
-                                    if (_lastAxisA[i] > 0.0) _lastAxisA[i] = 0.0;
+                                    if (_lastAxisA[i] > 0.0)
+                                    {
+                                        _lastAxisA[i] = 0.0;
+                                    }
                                 }
                             }
 
@@ -341,12 +367,18 @@ namespace DOF
                                 if (_lastAxisB[i] > 0.0)
                                 {
                                     _lastAxisB[i] -= (101 - Settings.shutdownValue) / 10000.0;
-                                    if (_lastAxisB[i] < 0.0) _lastAxisB[i] = 0.0;
+                                    if (_lastAxisB[i] < 0.0)
+                                    {
+                                        _lastAxisB[i] = 0.0;
+                                    }
                                 }
                                 else
                                 {
                                     _lastAxisB[i] += (101 - Settings.shutdownValue) / 10000.0;
-                                    if (_lastAxisB[i] > 0.0) _lastAxisB[i] = 0.0;
+                                    if (_lastAxisB[i] > 0.0)
+                                    {
+                                        _lastAxisB[i] = 0.0;
+                                    }
                                 }
                             }
                         }
@@ -354,7 +386,10 @@ namespace DOF
 
                     for (var i = 0; i < 18; i++)
                     {
-                        if (indAxis[i] < 0) continue;
+                        if (indAxis[i] < 0)
+                        {
+                            continue;
+                        }
 
                         byte num;
 
@@ -390,7 +425,10 @@ namespace DOF
                         bytes[indAxis[i] + 1] = hexBytes[1];
                     }
 
-                    if (!_stop) SData = Encoding.Default.GetString(bytes);
+                    if (!_stop)
+                    {
+                        SData = Encoding.Default.GetString(bytes);
+                    }
 
                     try
                     {

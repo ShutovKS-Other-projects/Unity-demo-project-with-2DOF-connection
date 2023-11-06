@@ -1,34 +1,38 @@
+#region
+
+using DOF;
 using DOF.Data;
 using UnityEngine;
 
+#endregion
+
 public class CarTelemetryHandler : MonoBehaviour
 {
-    public GameTelemetry telemetryData;
-    public Transform vehicleTransform;
-
-    public float updateInterval = 0.1f;
+    [SerializeField] private Transform vehicleTransform;
+    private readonly GameTelemetry _telemetryData = new();
+    private SerialInterface _serialInterface;
 
     private void Start()
     {
-        telemetryData = new GameTelemetry();
+        _serialInterface = new SerialInterface(InterfaceSerialData.Default, _telemetryData);
     }
 
     private void Update()
     {
         var rotation = vehicleTransform.rotation;
-        telemetryData.Pitch = rotation.eulerAngles.x;
-        telemetryData.Roll = rotation.eulerAngles.z;
-        telemetryData.Yaw = rotation.eulerAngles.y;
+        _telemetryData.Pitch = rotation.eulerAngles.x;
+        _telemetryData.Roll = rotation.eulerAngles.z;
+        _telemetryData.Yaw = rotation.eulerAngles.y;
 
         var position = vehicleTransform.position;
-        telemetryData.Surge = position.z;
-        telemetryData.Sway = position.x;
-        telemetryData.Heave = position.y;
+        _telemetryData.Surge = position.z;
+        _telemetryData.Sway = position.x;
+        _telemetryData.Heave = position.y;
 
-        telemetryData.Extra1 = 0.0;
-        telemetryData.Extra2 = 0.0;
-        telemetryData.Extra3 = 0.0;
+        _telemetryData.Extra1 = 0.0;
+        _telemetryData.Extra2 = 0.0;
+        _telemetryData.Extra3 = 0.0;
 
-        telemetryData.Wind = 0.0;
+        _telemetryData.Wind = 0.0;
     }
 }

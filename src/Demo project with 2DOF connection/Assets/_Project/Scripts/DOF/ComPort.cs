@@ -55,7 +55,10 @@ namespace DOF
         {
             try
             {
-                if (IsOpen()) serialPort.Close();
+                if (IsOpen())
+                {
+                    serialPort.Close();
+                }
             }
             catch
             {
@@ -71,7 +74,10 @@ namespace DOF
         {
             try
             {
-                if (IsOpen()) serialPort.Write(s);
+                if (IsOpen())
+                {
+                    serialPort.Write(s);
+                }
             }
             catch
             {
@@ -87,7 +93,10 @@ namespace DOF
         {
             try
             {
-                if (IsOpen()) serialPort.Write(bytes, 0, bytes.Length);
+                if (IsOpen())
+                {
+                    serialPort.Write(bytes, 0, bytes.Length);
+                }
             }
             catch
             {

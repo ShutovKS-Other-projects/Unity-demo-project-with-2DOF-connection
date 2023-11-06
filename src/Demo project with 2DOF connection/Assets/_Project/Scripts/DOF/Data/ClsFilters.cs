@@ -235,7 +235,10 @@ namespace DOF.Data
             _stored2 = 0.0;
             _stored3 = 0.0;
 
-            if (antiRollValue == 0) return;
+            if (antiRollValue == 0)
+            {
+                return;
+            }
 
             AntiRollSimLoop();
         }
@@ -275,7 +278,10 @@ namespace DOF.Data
             _stored2Sim = 0.0;
             _stored3Sim = 0.0;
 
-            if (smoothingValue == 0) return;
+            if (smoothingValue == 0)
+            {
+                return;
+            }
 
             SmoothingSimLoop();
         }
@@ -328,7 +334,10 @@ namespace DOF.Data
         /// </summary>
         private void SmoothingSimLoop()
         {
-            if (_th != null) return;
+            if (_th != null)
+            {
+                return;
+            }
 
             _th = new Thread(() =>
             {
@@ -347,7 +356,10 @@ namespace DOF.Data
         /// </summary>
         private void DeadZoneToZeroSimLoop()
         {
-            if (_thDeadZoneToZero != null) return;
+            if (_thDeadZoneToZero != null)
+            {
+                return;
+            }
 
             _thDeadZoneToZero = new Thread(() =>
             {
@@ -367,7 +379,10 @@ namespace DOF.Data
         /// </summary>
         private void AntiRollSimLoop()
         {
-            if (_thAntiRoll != null) return;
+            if (_thAntiRoll != null)
+            {
+                return;
+            }
 
             _thAntiRoll = new Thread(() =>
             {
@@ -389,7 +404,10 @@ namespace DOF.Data
         /// <returns>Сглаженное значение с учетом фильтра сглаживания.</returns>
         public double smoothing_sim(double value)
         {
-            if (_smoothingValueSim == 1.0) return value;
+            if (_smoothingValueSim == 1.0)
+            {
+                return value;
+            }
 
             _inputValueSim = value;
 
@@ -427,13 +445,18 @@ namespace DOF.Data
         {
             plusminus = false;
 
-            if (_deadZoneToZeroValue == 1.0) return value;
+            if (_deadZoneToZeroValue == 1.0)
+            {
+                return value;
+            }
 
             if (_startPlusMinusTick != 0)
             {
-                if (((value > 0.0 && _lastValuePlusMinus < 0.0) || (value < 0.0 && _lastValuePlusMinus > 0.0)) &&
+                if ((value > 0.0 && _lastValuePlusMinus < 0.0 || value < 0.0 && _lastValuePlusMinus > 0.0) &&
                     Math.Abs(value - _lastValuePlusMinus) > _deadToZeroInterval)
+                {
                     _startPlusMinusTick = Environment.TickCount;
+                }
 
                 if (Environment.TickCount - _startPlusMinusTick < _deadToZeroTime)
                 {
@@ -454,7 +477,7 @@ namespace DOF.Data
                 _stored3Sim = _stored3 = _storedToZero3 = value;
             }
 
-            if (((value > 0.0 && _lastValuePlusMinus < 0.0) || (value < 0.0 && _lastValuePlusMinus > 0.0)) &&
+            if ((value > 0.0 && _lastValuePlusMinus < 0.0 || value < 0.0 && _lastValuePlusMinus > 0.0) &&
                 Math.Abs(value - _lastValuePlusMinus) > _deadToZeroInterval)
             {
                 _startPlusMinusTick = Environment.TickCount;
@@ -481,8 +504,8 @@ namespace DOF.Data
             return value;
         }
 
-        // <summary>
-        /// Применяет фильтр "Зона затухания" (Dead Zone) к входному значению и возвращает значение с учетом зоны затухания.
+        /// <summary>
+        ///     Применяет фильтр "Зона затухания" (Dead Zone) к входному значению и возвращает значение с учетом зоны затухания.
         /// </summary>
         /// <param name="value">Входное значение для обработки.</param>
         /// <param name="startDeadZoneToZero">Возвращает true, если начата зона затухания до нуля, иначе false.</param>
@@ -491,9 +514,12 @@ namespace DOF.Data
         {
             startDeadZoneToZero = false;
 
-            if (_deadZoneValue == 0.0) return value;
+            if (_deadZoneValue == 0.0)
+            {
+                return value;
+            }
 
-            if ((value < -_deadZoneValue && value < 0.0) || (value > _deadZoneValue && value >= 0.0))
+            if (value < -_deadZoneValue && value < 0.0 || value > _deadZoneValue && value >= 0.0)
             {
                 _first = false;
                 _lastValueDeadZone = value;
@@ -513,9 +539,12 @@ namespace DOF.Data
         {
             startAntiroll = false;
 
-            if (_antiRollValue == 0.0 || (_antiRollMinValue == 0.0 && _antiRollMaxValue == 0.0)) return value;
+            if (_antiRollValue == 0.0 || _antiRollMinValue == 0.0 && _antiRollMaxValue == 0.0)
+            {
+                return value;
+            }
 
-            if ((value < _antiRollMinValue && value < 0.0) || (value > _antiRollMaxValue && value >= 0.0))
+            if (value < _antiRollMinValue && value < 0.0 || value > _antiRollMaxValue && value >= 0.0)
             {
                 value = 0.0;
                 startAntiroll = true;

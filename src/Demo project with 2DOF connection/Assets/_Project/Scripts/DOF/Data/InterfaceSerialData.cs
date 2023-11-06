@@ -58,6 +58,22 @@ namespace DOF.Data
             ShutDownMsec = 0;
         }
 
+        public static InterfaceSerialData Default => new()
+        {
+            ComPort = "COM3",
+            BitsPerSec = "115200",
+            StopBits = "1",
+            DataBits = "8",
+            StartUp = null,
+            InterfaceData = "L<Motor1a>R<Motor2a>Z<Motor4a>",
+            ShutDown = null,
+            StartUpMsec = 0,
+            InterfaceDataMsec = 0,
+            ShutDownMsec = 0,
+            Vid = "0403",
+            Pid = "6001"
+        };
+
         /// <summary>
         ///     Получает или задает COM-порт, используемый для связи.
         /// </summary>

@@ -160,30 +160,27 @@ namespace DOF.Data
         /// </summary>
         public int WindProc { get; set; }
 
-        public static GameSettingsData UniversalGameSettingsData()
+        public static GameSettingsData Default => new()
         {
-            return new GameSettingsData
-            {
-                MaxRoll = 0,
-                MinRoll = 3.390625,
-                MaxPitch = 0,
-                MinPitch = -3.390625,
-                MaxYaw = 0,
-                MinYaw = -3.390625,
-                MaxHeave = 0,
-                MinHeave = 3.390625,
-                MaxSway = 0,
-                MinSway = 3.390625,
-                MaxSurge = 0,
-                MinSurge = -3.390625,
-                MaxExtra1 = 0,
-                MinExtra1 = 3.390625,
-                MaxExtra2 = 0,
-                MinExtra2 = -3.390625,
-                MaxExtra3 = 0,
-                MinExtra3 = 3.390625,
-                WindProc = 0
-            };
-        }
+            MaxRoll = 0,
+            MinRoll = 3.390625,
+            MaxPitch = 0,
+            MinPitch = -3.390625,
+            MaxYaw = 0,
+            MinYaw = -3.390625,
+            MaxHeave = 0,
+            MinHeave = 3.390625,
+            MaxSway = 0,
+            MinSway = 3.390625,
+            MaxSurge = 0,
+            MinSurge = -3.390625,
+            MaxExtra1 = 0,
+            MinExtra1 = 3.390625,
+            MaxExtra2 = 0,
+            MinExtra2 = -3.390625,
+            MaxExtra3 = 0,
+            MinExtra3 = 3.390625,
+            WindProc = 0
+        };
     }
 }

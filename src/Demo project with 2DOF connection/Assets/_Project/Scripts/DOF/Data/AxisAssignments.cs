@@ -12,87 +12,6 @@ namespace DOF.Data
     /// </summary>
     public class AxisAssignments
     {
-        // Приватное поле, указывающее на наличие абсолютных значений для каждой оси.
-        private bool[] _absValues = new bool[8];
-
-        // Приватное поле для хранения значений по осям.
-        private readonly double[] _axis = new double[9];
-
-        // Приватное поле для хранения данных по осям.
-        private AxisDofData[] _axisDofs;
-
-        // Приватное поле для второго массива данных по осям.
-        private AxisDofData[] _axisDofs2;
-
-        // Приватное поле для хранения объектов ClsFilters.
-        private readonly ClsFilters[] _clsFilters = new ClsFilters[48];
-
-        // Приватное поле для хранения второго набора объектов ClsFilters.
-        private readonly ClsFilters[] _clsFilters2 = new ClsFilters[48];
-
-        // Приватное поле для коэффициента влияния ветра.
-        private int _coefWind;
-
-        // Приватное поле для максимального значения дополнительной оси 1.
-        private double _maxExtra1;
-
-        // Приватное поле для максимального значения дополнительной оси 2.
-        private double _maxExtra2;
-
-        // Приватное поле для максимального значения дополнительной оси 3.
-        private double _maxExtra3;
-
-        // Приватное поле для максимального значения по вертикальному движению.
-        private double _maxHeave;
-
-        // Приватное поле для максимального значения по тангажу.
-        private double _maxPitch;
-
-        // Приватное поле для максимального значения по крену.
-        private double _maxRoll;
-
-        // Приватное поле для максимального значения по продольному движению.
-        private double _maxSurge;
-
-        // Приватное поле для максимального значения по поперечному движению.
-        private double _maxSway;
-
-        // Приватное поле для максимального значения по рысканию.
-        private double _maxYaw;
-
-        // Приватное поле для минимального значения дополнительной оси 1.
-        private double _minExtra1;
-
-        // Приватное поле для минимального значения дополнительной оси 2.
-        private double _minExtra2;
-
-        // Приватное поле для минимального значения дополнительной оси 3.
-        private double _minExtra3;
-
-        // Приватное поле для минимального значения по вертикальному движению.
-        private double _minHeave;
-
-        // Приватное поле для минимального значения по тангажу.
-        private double _minPitch;
-
-        // Приватное поле для минимального значения по крену.
-        private double _minRoll;
-
-        // Приватное поле для минимального значения по продольному движению.
-        private double _minSurge;
-
-        // Приватное поле для минимального значения по поперечному движению.
-        private double _minSway;
-
-        // Приватное поле для минимального значения по рысканию.
-        private double _minYaw;
-
-        // Приватное поле для процента влияния ветра.
-        private double _procWind;
-
-        // Приватное поле для типа влияния ветра.
-        private int _typeWind;
-
         /// <summary>
         ///     Конструктор по умолчанию, инициализирует объект AxisAssignments.
         /// </summary>
@@ -104,6 +23,141 @@ namespace DOF.Data
                 _clsFilters2[index] = new ClsFilters();
             }
         }
+
+        /// <summary>
+        ///     Приватное поле для хранения значений по осям.
+        /// </summary>
+        private readonly double[] _axis = new double[9];
+
+        /// <summary>
+        ///     Приватное поле для хранения первого набора объектов ClsFilters.
+        /// </summary>
+        private readonly ClsFilters[] _clsFilters = new ClsFilters[48];
+
+        /// <summary>
+        ///     Приватное поле для хранения второго набора объектов ClsFilters.
+        /// </summary>
+        private readonly ClsFilters[] _clsFilters2 = new ClsFilters[48];
+
+        /// <summary>
+        ///     Приватное поле, указывающее на наличие абсолютных значений для каждой оси.
+        /// </summary>
+        private bool[] _absValues = new bool[8];
+
+        /// <summary>
+        ///     Приватное поле для хранения данных по осям.
+        /// </summary>
+        private AxisDofData[] _axisDofs;
+
+        /// <summary>
+        ///     Приватное поле для второго массива данных по осям.
+        /// </summary>
+        private AxisDofData[] _axisDofs2;
+
+        /// <summary>
+        ///     Приватное поле для коэффициента влияния ветра.
+        /// </summary>
+        private int _coefWind;
+
+        /// <summary>
+        ///     Приватное поле для максимального значения дополнительной оси 1.
+        /// </summary>
+        private double _maxExtra1;
+
+        /// <summary>
+        ///     Приватное поле для максимального значения дополнительной оси 2.
+        /// </summary>
+        private double _maxExtra2;
+
+        /// <summary>
+        ///     Приватное поле для максимального значения дополнительной оси 3.
+        /// </summary>
+        private double _maxExtra3;
+
+        /// <summary>
+        ///     Приватное поле для максимального значения по вертикальному движению.
+        /// </summary>
+        private double _maxHeave;
+
+        /// <summary>
+        ///     Приватное поле для максимального значения по тангажу.
+        /// </summary>
+        private double _maxPitch;
+
+        /// <summary>
+        ///     Приватное поле для максимального значения по крену.
+        /// </summary>
+        private double _maxRoll;
+
+        /// <summary>
+        ///     Приватное поле для максимального значения по продольному движению.
+        /// </summary>
+        private double _maxSurge;
+
+        /// <summary>
+        ///     Приватное поле для максимального значения по поперечному движению.
+        /// </summary>
+        private double _maxSway;
+
+        /// <summary>
+        ///     Приватное поле для максимального значения по рысканию.
+        /// </summary>
+        private double _maxYaw;
+
+        /// <summary>
+        ///     Приватное поле для минимального значения дополнительной оси 1.
+        /// </summary>
+        private double _minExtra1;
+
+        /// <summary>
+        ///     Приватное поле для минимального значения дополнительной оси 2.
+        /// </summary>
+        private double _minExtra2;
+
+        /// <summary>
+        ///     Приватное поле для минимального значения дополнительной оси 3.
+        /// </summary>
+        private double _minExtra3;
+
+        /// <summary>
+        ///     Приватное поле для минимального значения по вертикальному движению.
+        /// </summary>
+        private double _minHeave;
+
+        /// <summary>
+        ///     Приватное поле для минимального значения по тангажу.
+        /// </summary>
+        private double _minPitch;
+
+        /// <summary>
+        ///     Приватное поле для минимального значения по крену.
+        /// </summary>
+        private double _minRoll;
+
+        /// <summary>
+        ///     Приватное поле для минимального значения по продольному движению.
+        /// </summary>
+        private double _minSurge;
+
+        /// <summary>
+        ///     Приватное поле для минимального значения по поперечному движению.
+        /// </summary>
+        private double _minSway;
+
+        /// <summary>
+        ///     Приватное поле для минимального значения по рысканию.
+        /// </summary>
+        private double _minYaw;
+
+        /// <summary>
+        ///     Приватное поле для процента влияния ветра.
+        /// </summary>
+        private double _procWind;
+
+        /// <summary>
+        ///     Приватное поле для типа влияния ветра.
+        /// </summary>
+        private int _typeWind;
 
         /// <summary>
         ///     Освобождает ресурсы, связанные с объектами ClsFilters.
@@ -180,11 +234,13 @@ namespace DOF.Data
                 var startIndex = i * 6;
                 _absValues[i] = false;
                 for (var j = startIndex; j < startIndex + 6; j++)
+                {
                     if (axisDofs[j].Force == "Wind")
                     {
                         _absValues[i] = true;
                         break;
                     }
+                }
             }
 
             for (var index = 0; index < 48; ++index)
@@ -318,59 +374,125 @@ namespace DOF.Data
         {
             if (!IsAntiRollEnabledForForce(nameof(pitch)))
             {
-                if (pitch > _maxPitch) pitch = _maxPitch;
-                if (pitch < _minPitch) pitch = _minPitch;
+                if (pitch > _maxPitch)
+                {
+                    pitch = _maxPitch;
+                }
+
+                if (pitch < _minPitch)
+                {
+                    pitch = _minPitch;
+                }
             }
 
             if (!IsAntiRollEnabledForForce(nameof(roll)))
             {
-                if (roll > _maxRoll) roll = _maxRoll;
-                if (roll < _minRoll) roll = _minRoll;
+                if (roll > _maxRoll)
+                {
+                    roll = _maxRoll;
+                }
+
+                if (roll < _minRoll)
+                {
+                    roll = _minRoll;
+                }
             }
 
             if (!IsAntiRollEnabledForForce(nameof(yaw)))
             {
-                if (yaw > _maxYaw) yaw = _maxYaw;
-                if (yaw < _minYaw) yaw = _minYaw;
+                if (yaw > _maxYaw)
+                {
+                    yaw = _maxYaw;
+                }
+
+                if (yaw < _minYaw)
+                {
+                    yaw = _minYaw;
+                }
             }
 
             if (!IsAntiRollEnabledForForce(nameof(surge)))
             {
-                if (surge > _maxSurge) surge = _maxSurge;
-                if (surge < _minSurge) surge = _minSurge;
+                if (surge > _maxSurge)
+                {
+                    surge = _maxSurge;
+                }
+
+                if (surge < _minSurge)
+                {
+                    surge = _minSurge;
+                }
             }
 
             if (!IsAntiRollEnabledForForce(nameof(sway)))
             {
-                if (sway > _maxSway) sway = _maxSway;
-                if (sway < _minSway) sway = _minSway;
+                if (sway > _maxSway)
+                {
+                    sway = _maxSway;
+                }
+
+                if (sway < _minSway)
+                {
+                    sway = _minSway;
+                }
             }
 
             if (!IsAntiRollEnabledForForce(nameof(heave)))
             {
-                if (heave > _maxHeave) heave = _maxHeave;
-                if (heave < _minHeave) heave = _minHeave;
+                if (heave > _maxHeave)
+                {
+                    heave = _maxHeave;
+                }
+
+                if (heave < _minHeave)
+                {
+                    heave = _minHeave;
+                }
             }
 
             if (!IsAntiRollEnabledForForce("Ex1"))
             {
-                if (extra1 > _maxExtra1) extra1 = _maxExtra1;
-                if (extra1 < _minExtra1) extra1 = _minExtra1;
+                if (extra1 > _maxExtra1)
+                {
+                    extra1 = _maxExtra1;
+                }
+
+                if (extra1 < _minExtra1)
+                {
+                    extra1 = _minExtra1;
+                }
             }
 
             if (!IsAntiRollEnabledForForce("Ex2"))
             {
-                if (extra2 > _maxExtra2) extra2 = _maxExtra2;
-                if (extra2 < _minExtra2) extra2 = _minExtra2;
+                if (extra2 > _maxExtra2)
+                {
+                    extra2 = _maxExtra2;
+                }
+
+                if (extra2 < _minExtra2)
+                {
+                    extra2 = _minExtra2;
+                }
             }
 
             if (!IsAntiRollEnabledForForce("Ex3"))
             {
-                if (extra3 > _maxExtra3) extra3 = _maxExtra3;
-                if (extra3 < _minExtra3) extra3 = _minExtra3;
+                if (extra3 > _maxExtra3)
+                {
+                    extra3 = _maxExtra3;
+                }
+
+                if (extra3 < _minExtra3)
+                {
+                    extra3 = _minExtra3;
+                }
             }
 
-            if (_axisDofs == null) return;
+            if (_axisDofs == null)
+            {
+                return;
+            }
 
             var axisIndices = new[] { 0, 1, 2, 3, 4, 5, 48, 49, 50, 51, 52, 53 };
             var axisIndices2 = new[] { 6, 7, 8, 9, 10, 11, 54, 55, 56, 57, 58, 59 };
@@ -483,7 +605,10 @@ namespace DOF.Data
                 _ => num2
             };
 
-            if (axisDofDataArray[index].Dir) num2 *= -1.0;
+            if (axisDofDataArray[index].Dir)
+            {
+                num2 *= -1.0;
+            }
 
             return num2 * (0.01 * axisDofDataArray[index].Proc);
         }
@@ -496,7 +621,10 @@ namespace DOF.Data
         /// <returns>Значение оси.</returns>
         public double GetAxis(int axisNumber, ref bool absValue)
         {
-            if (axisNumber < 0 || axisNumber >= _axis.Length) throw new ArgumentOutOfRangeException($"{axisNumber}");
+            if (axisNumber < 0 || axisNumber >= _axis.Length)
+            {
+                throw new ArgumentOutOfRangeException($"{axisNumber}");
+            }
 
             absValue = _absValues[axisNumber];
             var axisValue = _axis[axisNumber];
@@ -526,8 +654,12 @@ namespace DOF.Data
         private bool IsAntiRollEnabledForForce(string force)
         {
             for (var index = 0; index < 48; ++index)
+            {
                 if (_axisDofs[index].Force == force && _axisDofs[index].AntiRoll != 0)
+                {
                     return true;
+                }
+            }
 
             return false;
         }
