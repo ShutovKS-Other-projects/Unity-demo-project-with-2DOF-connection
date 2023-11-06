@@ -25,6 +25,8 @@ namespace DOF.Data
             GameName = gameName;
         }
 
+        private RedirectData() { }
+
         /// <summary>
         ///     Получает или задает имя игры.
         /// </summary>
@@ -39,5 +41,15 @@ namespace DOF.Data
         ///     Получает или задает порт игрового сервера.
         /// </summary>
         public int Port { get; set; }
+
+        /// <summary>
+        ///    Возвращает объект RedirectData с параметрами по умолчанию.
+        /// </summary>
+        public static RedirectData Default => new()
+        {
+            GameName = "Default",
+            Ip = "127.0.0.1",
+            Port = 20777,
+        };
     }
 }
