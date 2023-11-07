@@ -1,4 +1,3 @@
-using DOF.Data;
 using DOF.Data.Dynamic;
 using UnityEngine;
 
@@ -6,6 +5,11 @@ public class CarTelemetryHandler : MonoBehaviour
 {
     [SerializeField] private Transform vehicleTransform;
     private ObjectTelemetryData _telemetryDataData;
+
+    public void SetObjectTelemetryData(ObjectTelemetryData objectTelemetryData)
+    {
+        _telemetryDataData = objectTelemetryData;
+    }
     
     private void Update()
     {
