@@ -33,15 +33,14 @@ namespace DOF
             double minExtra1, double maxExtra1, double minExtra2, double maxExtra2, double minExtra3, double maxExtra3)
         {
             _axisAssignmentsA.SetAxisDofs(axisDofs1, axisDofs3,
-                minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw, minSurge, maxSurge, minSway, maxSway, 
+                minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw, minSurge, maxSurge, minSway, maxSway,
                 minHeave, maxHeave, minExtra1, maxExtra1, minExtra2, maxExtra2, minExtra3, maxExtra3,
                 0, 100, 0);
 
-            _axisAssignmentsB.SetAxisDofs(axisDofs2, axisDofs4, 
-                minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw, minSurge, maxSurge, minSway, maxSway, 
+            _axisAssignmentsB.SetAxisDofs(axisDofs2, axisDofs4,
+                minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw, minSurge, maxSurge, minSway, maxSway,
                 minHeave, maxHeave, minExtra1, maxExtra1, minExtra2, maxExtra2, minExtra3, maxExtra3,
                 0, 100, 0);
-
         }
 
         public void Start() => new Thread(() =>
@@ -68,80 +67,24 @@ namespace DOF
                 _axisAssignmentsA.ProcessingData(pitch, roll, yaw, surge, sway, heave, extra1, extra2, extra3, wind);
                 _axisAssignmentsB.ProcessingData(pitch, roll, yaw, surge, sway, heave, extra1, extra2, extra3, wind);
 
-                if (SettingsData.isRunning)
+                for (var i = 0; i < 8; i++)
                 {
-                    _lastAxisA[0] = _axisAssignmentsA.GetAxis(0, ref absValues[0]);
-                    _lastAxisA[1] = _axisAssignmentsA.GetAxis(1, ref absValues[1]);
-                    _lastAxisA[2] = _axisAssignmentsA.GetAxis(2, ref absValues[2]);
-                    _lastAxisA[3] = _axisAssignmentsA.GetAxis(3, ref absValues[3]);
-                    _lastAxisA[4] = _axisAssignmentsA.GetAxis(4, ref absValues[4]);
-                    _lastAxisA[5] = _axisAssignmentsA.GetAxis(5, ref absValues[5]);
-                    _lastAxisA[6] = _axisAssignmentsA.GetAxis(6, ref absValues[6]);
-                    _lastAxisA[7] = _axisAssignmentsA.GetAxis(7, ref absValues[7]);
-                    _lastAxisB[0] = _axisAssignmentsB.GetAxis(0, ref absValues[8]);
-                    _lastAxisB[1] = _axisAssignmentsB.GetAxis(1, ref absValues[9]);
-                    _lastAxisB[2] = _axisAssignmentsB.GetAxis(2, ref absValues[10]);
-                    _lastAxisB[3] = _axisAssignmentsB.GetAxis(3, ref absValues[11]);
-                    _lastAxisB[4] = _axisAssignmentsB.GetAxis(4, ref absValues[12]);
-                    _lastAxisB[5] = _axisAssignmentsB.GetAxis(5, ref absValues[13]);
-                    _lastAxisB[6] = _axisAssignmentsB.GetAxis(6, ref absValues[14]);
-                    _lastAxisB[7] = _axisAssignmentsB.GetAxis(7, ref absValues[15]);
-                    _lastAxisA[8] = _axisAssignmentsA.GetAxis9();
-                    _lastAxisB[8] = _axisAssignmentsB.GetAxis9();
-                }
-                else
-                {
-                    for (var index = 0; index < 8; ++index)
-                    {
-                        if (absValues[index])
-                        {
-                            _lastAxisA[index] = 0.0;
-                        }
-
-                        if (absValues[index + 8])
-                        {
-                            _lastAxisB[index] = 0.0;
-                        }
-                    }
-
-                    _lastAxisA[8] = 0.0;
-                    _lastAxisB[8] = 0.0;
-
-                    for (var index = 0; index < 7; ++index)
-                    {
-                        if (_lastAxisA[index] == 0.0)
-                        {
-                            continue;
-                        }
-
-                        if (_lastAxisA[index] > 0.0)
-                        {
-                            _lastAxisA[index] -= 101 / 10000.0;
-                            if (_lastAxisA[index] < 0.0)
-                            {
-                                _lastAxisA[index] = 0.0;
-                            }
-                        }
-                        else
-                        {
-                            _lastAxisA[index] += 101 / 10000.0;
-                            if (_lastAxisA[index] > 0.0)
-                            {
-                                _lastAxisA[index] = 0.0;
-                            }
-                        }
-                    }
+                    _lastAxisA[i] = _axisAssignmentsA.GetAxis(i, ref absValues[i]);
+                    _lastAxisB[i] = _axisAssignmentsA.GetAxis(i, ref absValues[i + 8]);
                 }
 
-                var nums = new byte[18];
+                _lastAxisA[8] = _axisAssignmentsA.GetAxis9();
+                _lastAxisB[8] = _axisAssignmentsB.GetAxis9();
+
+                var numbers = new byte[18];
                 for (var index = 0; index < 8; ++index)
                 {
-                    nums[index] = (byte)(sbyte.MaxValue * _lastAxisA[index] + sbyte.MaxValue);
-                    nums[index + 8] = (byte)(sbyte.MaxValue * _lastAxisB[index] + sbyte.MaxValue);
+                    numbers[index] = (byte)(sbyte.MaxValue * _lastAxisA[index] + sbyte.MaxValue);
+                    numbers[index + 8] = (byte)(sbyte.MaxValue * _lastAxisB[index] + sbyte.MaxValue);
                 }
 
-                nums[16] = (byte)_lastAxisA[8];
-                nums[17] = (byte)_lastAxisB[8];
+                numbers[16] = (byte)_lastAxisA[8];
+                numbers[17] = (byte)_lastAxisB[8];
 
                 for (var index = 0; index < 16; ++index)
                 {
@@ -150,14 +93,14 @@ namespace DOF
                         continue;
                     }
 
-                    var hexBytes = GetHexBytes(nums[index]);
+                    var hexBytes = GetHexBytes(numbers[index]);
                     bytes[indAxis[index]] = hexBytes[0];
                     bytes[indAxis[index] + 1] = hexBytes[1];
                 }
 
                 if (indAxis[16] >= 0)
                 {
-                    var decimalBytes = GetDecimalBytes(nums[16]);
+                    var decimalBytes = GetDecimalBytes(numbers[16]);
                     bytes[indAxis[16]] = decimalBytes[0];
                     bytes[indAxis[16] + 1] = decimalBytes[1];
                     bytes[indAxis[16] + 2] = decimalBytes[2];
@@ -165,7 +108,7 @@ namespace DOF
 
                 if (indAxis[17] >= 0)
                 {
-                    var decimalBytes = GetDecimalBytes(nums[17]);
+                    var decimalBytes = GetDecimalBytes(numbers[17]);
                     bytes[indAxis[17]] = decimalBytes[0];
                     bytes[indAxis[17] + 1] = decimalBytes[1];
                     bytes[indAxis[17] + 2] = decimalBytes[2];
@@ -174,19 +117,21 @@ namespace DOF
                 if (SettingsData.isRunning)
                 {
                     _sData = Encoding.Default.GetString(bytes);
+                    // Debug.Log(_sData);
                 }
 
                 try
                 {
                     ComPort.Write(bytes);
-                    var str = "";
 
-                    for (var index = 0; index < 18; ++index)
-                    {
-                        str = str + nums[index] + " ";
-                    }
-
-                    Debug.Log(str);
+                    // var str = "";
+                    //
+                    // for (var index = 0; index < 18; ++index)
+                    // {
+                    //     str = str + nums[index] + " ";
+                    // }
+                    //
+                    // Debug.Log(str);
                 }
                 catch
                 {
@@ -221,24 +166,11 @@ namespace DOF
 
                 try
                 {
-                    flags[0] = interfaceData.Substring(index, 9).Contains("<Motor1a>");
-                    flags[1] = interfaceData.Substring(index, 9).Contains("<Motor2a>");
-                    flags[2] = interfaceData.Substring(index, 9).Contains("<Motor3a>");
-                    flags[3] = interfaceData.Substring(index, 9).Contains("<Motor4a>");
-                    flags[4] = interfaceData.Substring(index, 9).Contains("<Motor5a>");
-                    flags[5] = interfaceData.Substring(index, 9).Contains("<Motor6a>");
-                    flags[6] = interfaceData.Substring(index, 9).Contains("<Motor7a>");
-                    flags[7] = interfaceData.Substring(index, 9).Contains("<Motor8a>");
-                    flags[8] = interfaceData.Substring(index, 9).Contains("<Motor9a>");
-                    flags[9] = interfaceData.Substring(index, 9).Contains("<Motor1b>");
-                    flags[10] = interfaceData.Substring(index, 9).Contains("<Motor2b>");
-                    flags[11] = interfaceData.Substring(index, 9).Contains("<Motor3b>");
-                    flags[12] = interfaceData.Substring(index, 9).Contains("<Motor4b>");
-                    flags[13] = interfaceData.Substring(index, 9).Contains("<Motor5b>");
-                    flags[14] = interfaceData.Substring(index, 9).Contains("<Motor6b>");
-                    flags[15] = interfaceData.Substring(index, 9).Contains("<Motor7b>");
-                    flags[16] = interfaceData.Substring(index, 9).Contains("<Motor8b>");
-                    flags[17] = interfaceData.Substring(index, 9).Contains("<Motor9b>");
+                    for (var i = 1; i <= 9; i++)
+                    {
+                        flags[i - 1] = interfaceData.Substring(index, 9).Contains($"<Motor{i}a>");
+                        flags[i + 8] = interfaceData.Substring(index, 9).Contains($"<Motor{i}b>");
+                    }
 
                     for (var index1 = 0; index1 < 18; ++index1)
                     {
@@ -260,7 +192,6 @@ namespace DOF
                     }
 
                     var flag9And16 = flags[8] | flags[16];
-
 
                     if (flag1To8And9To16)
                     {
