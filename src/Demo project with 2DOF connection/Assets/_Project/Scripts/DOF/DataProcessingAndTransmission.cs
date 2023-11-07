@@ -3,12 +3,13 @@ using System.Threading;
 using DOF.Data;
 using DOF.Data.Dynamic;
 using DOF.Data.Static;
+using UnityEngine;
 
 namespace DOF
 {
     public class DataProcessingAndTransmission
     {
-        private DataProcessingAndTransmission(
+        public DataProcessingAndTransmission(
             ObjectTelemetryData objectTelemetryData,
             AxisAssignments axisAssignmentsA,
             AxisAssignments axisAssignmentsB)
@@ -25,12 +26,29 @@ namespace DOF
         private double[] _lastAxisB = new double[9];
         private string _sData;
 
-        private void Function() => new Thread(() =>
+        public void AxisAssignmentsSetUp(
+            AxisDofData[] axisDofs1, AxisDofData[] axisDofs2, AxisDofData[] axisDofs3, AxisDofData[] axisDofs4,
+            double minPitch, double maxPitch, double minRoll, double maxRoll, double minYaw, double maxYaw,
+            double minSurge, double maxSurge, double minSway, double maxSway, double minHeave, double maxHeave,
+            double minExtra1, double maxExtra1, double minExtra2, double maxExtra2, double minExtra3, double maxExtra3)
+        {
+            _axisAssignmentsA.SetAxisDofs(axisDofs1, axisDofs3,
+                minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw, minSurge, maxSurge, minSway, maxSway, 
+                minHeave, maxHeave, minExtra1, maxExtra1, minExtra2, maxExtra2, minExtra3, maxExtra3,
+                0, 100, 0);
+
+            _axisAssignmentsB.SetAxisDofs(axisDofs2, axisDofs4, 
+                minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw, minSurge, maxSurge, minSway, maxSway, 
+                minHeave, maxHeave, minExtra1, maxExtra1, minExtra2, maxExtra2, minExtra3, maxExtra3,
+                0, 100, 0);
+
+        }
+
+        public void Start() => new Thread(() =>
         {
             var indAxis = new int[18];
             var interfaceData = InterfaceData.interfaceData;
             GetInterfaceAxisIndex(indAxis, ref interfaceData);
-
             var bytes = Encoding.ASCII.GetBytes(interfaceData);
             var absValues = new bool[16];
 
@@ -127,6 +145,11 @@ namespace DOF
 
                 for (var index = 0; index < 16; ++index)
                 {
+                    if (indAxis[index] < 0)
+                    {
+                        continue;
+                    }
+
                     var hexBytes = GetHexBytes(nums[index]);
                     bytes[indAxis[index]] = hexBytes[0];
                     bytes[indAxis[index] + 1] = hexBytes[1];
@@ -156,6 +179,14 @@ namespace DOF
                 try
                 {
                     ComPort.Write(bytes);
+                    var str = "";
+
+                    for (var index = 0; index < 18; ++index)
+                    {
+                        str = str + nums[index] + " ";
+                    }
+
+                    Debug.Log(str);
                 }
                 catch
                 {
