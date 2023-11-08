@@ -28,8 +28,7 @@ public class GameController : MonoBehaviour, ICoroutineRunner
             _objectTelemetryData,
             new AxisAssignments(true),
             new AxisAssignments(false),
-            _comPort,
-            this);
+            _comPort);
         
         var inputDirectory = @"C:\Users\ShutovKS\Documents\projects\Unity-demo-project-with-2DOF-connection\src\Demo project with 2DOF connection\Assets\_Project\Data\Json";
 

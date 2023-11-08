@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using DOF.Data.Dynamic;
 using DOF.Data.Static;
 using UnityEngine;
@@ -14,25 +15,22 @@ namespace DOF
             ObjectTelemetryData objectTelemetryData,
             AxisAssignments axisAssignmentsA,
             AxisAssignments axisAssignmentsB,
-            ComPort comPort,
-            ICoroutineRunner coroutineRunner)
+            ComPort comPort)
         {
             _objectTelemetryData = objectTelemetryData;
             _axisAssignmentsA = axisAssignmentsA;
             _axisAssignmentsB = axisAssignmentsB;
             _comPort = comPort;
-            _coroutineRunner = coroutineRunner;
         }
 
         private ObjectTelemetryData _objectTelemetryData;
         private AxisAssignments _axisAssignmentsA;
         private AxisAssignments _axisAssignmentsB;
         private readonly ComPort _comPort;
-        private readonly ICoroutineRunner _coroutineRunner;
+        private Thread _threadRunner;
         private double[] _lastAxisA = new double[9];
         private double[] _lastAxisB = new double[9];
         private string _sData;
-        private Coroutine _coroutineStart;
 
         public void AxisAssignmentsSetUp(
             AxisDofData[] axisDofData1, AxisDofData[] axisDofData2, AxisDofData[] axisDofData3,
@@ -54,10 +52,11 @@ namespace DOF
 
         public void Start()
         {
-            _coroutineStart = _coroutineRunner.StartCoroutine(Task());
+            _threadRunner = new Thread(TaskStart);
+            _threadRunner.Start();
             return;
 
-            IEnumerator Task()
+            void TaskStart()
             {
                 var indAxis = new int[18];
                 var absValues = new bool[16];
@@ -138,13 +137,7 @@ namespace DOF
 
                     try
                     {
-                        var port = 12345;
-                        var ipAddress = "127.0.0.1";
-                        using var client = new TcpClient(ipAddress, port);
-                        using var stream = client.GetStream();
-                        stream.Write(bytes, 0, bytes.Length);
-                        Console.WriteLine("Данные отправлены.");
-                        // _comPort.Write(bytes);
+                        ShippingToPort(bytes);
                     }
                     catch
                     {
@@ -152,15 +145,24 @@ namespace DOF
 
                     if (SettingsData.isRunning == false)
                     {
-                        yield return new WaitForSeconds(100);
+                        Thread.Sleep(100);
                         _comPort.Disconnect();
                     }
 
-                    // yield return new WaitForSeconds(InterfaceData.interfaceData_msec);
-                    yield return null;
+                    Thread.Sleep(InterfaceData.interfaceData_msec);
                     Debug.Log(SettingsData.isRunning);
                 }
             }
+        }
+
+        private void ShippingToPort(byte[] bytes)
+        {
+            const int PORT = 12345;
+            const string IP_ADDRESS = "127.0.0.1";
+            using var client = new TcpClient(IP_ADDRESS, PORT);
+            using var stream = client.GetStream();
+            stream.WriteAsync(bytes, 0, bytes.Length);
+            Console.WriteLine("Данные отправлены.");
         }
 
 
@@ -241,7 +243,7 @@ namespace DOF
 
         public void Dispose()
         {
-            _coroutineRunner.StopCoroutine(_coroutineStart);
+            _threadRunner?.Abort();
         }
     }
 }
