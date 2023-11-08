@@ -1,7 +1,7 @@
 using System;
+using System.Collections;
+using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using DOF.Data;
 using DOF.Data.Dynamic;
 using DOF.Data.Static;
 using UnityEngine;
@@ -13,23 +13,30 @@ namespace DOF
         public DataProcessingAndTransmission(
             ObjectTelemetryData objectTelemetryData,
             AxisAssignments axisAssignmentsA,
-            AxisAssignments axisAssignmentsB)
+            AxisAssignments axisAssignmentsB,
+            ComPort comPort,
+            ICoroutineRunner coroutineRunner)
         {
             _objectTelemetryData = objectTelemetryData;
             _axisAssignmentsA = axisAssignmentsA;
             _axisAssignmentsB = axisAssignmentsB;
+            _comPort = comPort;
+            _coroutineRunner = coroutineRunner;
         }
 
         private ObjectTelemetryData _objectTelemetryData;
         private AxisAssignments _axisAssignmentsA;
         private AxisAssignments _axisAssignmentsB;
+        private readonly ComPort _comPort;
+        private readonly ICoroutineRunner _coroutineRunner;
         private double[] _lastAxisA = new double[9];
         private double[] _lastAxisB = new double[9];
         private string _sData;
-        private Thread _threadStart;
+        private Coroutine _coroutineStart;
 
         public void AxisAssignmentsSetUp(
-            AxisDofData[] axisDofData1, AxisDofData[] axisDofData2, AxisDofData[] axisDofData3, AxisDofData[] axisDofData4,
+            AxisDofData[] axisDofData1, AxisDofData[] axisDofData2, AxisDofData[] axisDofData3,
+            AxisDofData[] axisDofData4,
             double minPitch, double maxPitch, double minRoll, double maxRoll, double minYaw, double maxYaw,
             double minSurge, double maxSurge, double minSway, double maxSway, double minHeave, double maxHeave,
             double minExtra1, double maxExtra1, double minExtra2, double maxExtra2, double minExtra3, double maxExtra3)
@@ -47,7 +54,10 @@ namespace DOF
 
         public void Start()
         {
-            _threadStart = new Thread(() =>
+            _coroutineStart = _coroutineRunner.StartCoroutine(Task());
+            return;
+
+            IEnumerator Task()
             {
                 var indAxis = new int[18];
                 var absValues = new bool[16];
@@ -55,7 +65,7 @@ namespace DOF
                 GetInterfaceAxisIndex(indAxis, ref interfaceData);
                 var bytes = Encoding.ASCII.GetBytes(interfaceData);
 
-                while (true)
+                while (SettingsData.isRunning)
                 {
                     var pitch = _objectTelemetryData.Pitch;
                     var roll = _objectTelemetryData.Roll;
@@ -73,15 +83,15 @@ namespace DOF
                     _axisAssignmentsB.ProcessingData(pitch, roll, yaw, surge, sway, heave, extra1, extra2, extra3,
                         wind);
 
-                    for (int i = 0; i < 8; i++)
+                    for (var i = 0; i < 8; i++)
                     {
                         _lastAxisA[i] = _axisAssignmentsA.GetAxis(i, ref absValues[i]);
                         _lastAxisB[i] = _axisAssignmentsB.GetAxis(i, ref absValues[i + 8]);
                     }
-                    
+
                     _lastAxisA[8] = _axisAssignmentsA.GetAxis9();
                     _lastAxisB[8] = _axisAssignmentsB.GetAxis9();
-                    
+
                     var numbers = new byte[18];
                     for (var index = 0; index < 8; ++index)
                     {
@@ -123,12 +133,18 @@ namespace DOF
                     if (SettingsData.isRunning)
                     {
                         _sData = Encoding.Default.GetString(bytes);
-                        // Debug.Log(_sData);
+                        Debug.Log(_sData);
                     }
 
                     try
                     {
-                        ComPort.Write(bytes);
+                        var port = 12345;
+                        var ipAddress = "127.0.0.1";
+                        using var client = new TcpClient(ipAddress, port);
+                        using var stream = client.GetStream();
+                        stream.Write(bytes, 0, bytes.Length);
+                        Console.WriteLine("Данные отправлены.");
+                        // _comPort.Write(bytes);
                     }
                     catch
                     {
@@ -136,14 +152,15 @@ namespace DOF
 
                     if (SettingsData.isRunning == false)
                     {
-                        Thread.Sleep(100);
-                        ComPort.Disconnect();
+                        yield return new WaitForSeconds(100);
+                        _comPort.Disconnect();
                     }
 
-                    Thread.Sleep(InterfaceData.interfaceData_msec);
+                    // yield return new WaitForSeconds(InterfaceData.interfaceData_msec);
+                    yield return null;
+                    Debug.Log(SettingsData.isRunning);
                 }
-            });
-            _threadStart.Start();
+            }
         }
 
 
@@ -224,7 +241,7 @@ namespace DOF
 
         public void Dispose()
         {
-            _threadStart?.Abort();
+            _coroutineRunner.StopCoroutine(_coroutineStart);
         }
     }
 }

@@ -3,14 +3,13 @@ using UnityEngine;
 
 namespace DOF
 {
-    public static class ComPort
+    public class ComPort
     {
-        private static SerialPortStream serialPort;
+        private readonly SerialPortStream _serialPort;
 
-        public static bool TryConnect(int comPortNumber = 3, int baudRate = 115200, int dataBits = 8,
-            StopBits stopBits = StopBits.One)
+        public ComPort(int comPortNumber = 3, int baudRate = 115200, int dataBits = 8, StopBits stopBits = StopBits.One)
         {
-            serialPort = new SerialPortStream
+            _serialPort = new SerialPortStream
             {
                 BaudRate = baudRate,
                 DataBits = dataBits,
@@ -21,14 +20,16 @@ namespace DOF
                 ReadTimeout = 200,
                 PortName = "COM" + comPortNumber
             };
-
-            Debug.Log("Connecting to COM port");
-            Debug.Log("Port name: " + serialPort.PortName);
-            Debug.Log("Is open: " + serialPort.IsOpen);
             
+            Debug.Log("Connecting to COM port");
+            Debug.Log("Is open: " + _serialPort.IsOpen);
+        }
+
+        public bool TryConnect()
+        {
             try
             {
-                serialPort.Open();
+                _serialPort.Open();
             }
             catch
             {
@@ -38,44 +39,39 @@ namespace DOF
             return true;
         }
 
-        public static void Disconnect()
+        public void Disconnect()
         {
             Debug.Log("Disconnecting from COM port");
             try
             {
                 if (IsOpen())
                 {
-                    serialPort.Close();
+                    _serialPort.Close();
                 }
             }
             catch { }
         }
 
-        public static void Write(string s)
+        public void Write(string s)
         {
             try
             {
                 if (IsOpen())
                 {
-                    serialPort.Write(s);
+                    _serialPort.Write(s);
                 }
             }
             catch { }
         }
 
-        public static void Write(byte[] bytes)
+        public void Write(byte[] bytes)
         {
             try
             {
                 if (IsOpen())
                 {
-                    serialPort.Write(bytes, 0, bytes.Length);
-                    var str = "";
-                    for (var index = 0; index < 18; ++index)
-                    {
-                        str = str + bytes[index] + " ";
-                    }
-                    Debug.Log(str);
+                    Debug.Log("Serial port is open");
+                    _serialPort.Write(bytes, 0, bytes.Length);
                 }
                 else
                 {
@@ -85,11 +81,11 @@ namespace DOF
             catch { }
         }
 
-        public static bool IsOpen()
+        public bool IsOpen()
         {
             try
             {
-                return serialPort.IsOpen;
+                return _serialPort.IsOpen;
             }
             catch
             {
