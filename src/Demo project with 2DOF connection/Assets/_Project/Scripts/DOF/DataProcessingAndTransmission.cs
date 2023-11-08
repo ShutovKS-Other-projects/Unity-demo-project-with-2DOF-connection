@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using System.Threading;
 using DOF.Data;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace DOF
 {
-    public class DataProcessingAndTransmission
+    public class DataProcessingAndTransmission : IDisposable
     {
         public DataProcessingAndTransmission(
             ObjectTelemetryData objectTelemetryData,
@@ -25,127 +26,125 @@ namespace DOF
         private double[] _lastAxisA = new double[9];
         private double[] _lastAxisB = new double[9];
         private string _sData;
+        private Thread _threadStart;
 
         public void AxisAssignmentsSetUp(
-            AxisDofData[] axisDofs1, AxisDofData[] axisDofs2, AxisDofData[] axisDofs3, AxisDofData[] axisDofs4,
+            AxisDofData[] axisDofData1, AxisDofData[] axisDofData2, AxisDofData[] axisDofData3, AxisDofData[] axisDofData4,
             double minPitch, double maxPitch, double minRoll, double maxRoll, double minYaw, double maxYaw,
             double minSurge, double maxSurge, double minSway, double maxSway, double minHeave, double maxHeave,
             double minExtra1, double maxExtra1, double minExtra2, double maxExtra2, double minExtra3, double maxExtra3)
         {
-            _axisAssignmentsA.SetAxisDofs(axisDofs1, axisDofs3,
+            _axisAssignmentsA.SetAxisDofs(axisDofData1, axisDofData3,
                 minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw, minSurge, maxSurge, minSway, maxSway,
                 minHeave, maxHeave, minExtra1, maxExtra1, minExtra2, maxExtra2, minExtra3, maxExtra3,
                 0, 100, 0);
 
-            _axisAssignmentsB.SetAxisDofs(axisDofs2, axisDofs4,
+            _axisAssignmentsB.SetAxisDofs(axisDofData2, axisDofData4,
                 minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw, minSurge, maxSurge, minSway, maxSway,
                 minHeave, maxHeave, minExtra1, maxExtra1, minExtra2, maxExtra2, minExtra3, maxExtra3,
                 0, 100, 0);
         }
 
-        public void Start() => new Thread(() =>
+        public void Start()
         {
-            var indAxis = new int[18];
-            var interfaceData = InterfaceData.interfaceData;
-            GetInterfaceAxisIndex(indAxis, ref interfaceData);
-            var bytes = Encoding.ASCII.GetBytes(interfaceData);
-            var absValues = new bool[16];
-
-            while (true)
+            _threadStart = new Thread(() =>
             {
-                var pitch = _objectTelemetryData.Pitch;
-                var roll = _objectTelemetryData.Roll;
-                var yaw = _objectTelemetryData.Yaw;
-                var surge = _objectTelemetryData.Surge;
-                var sway = _objectTelemetryData.Sway;
-                var heave = _objectTelemetryData.Heave;
-                var extra1 = _objectTelemetryData.Extra1;
-                var extra2 = _objectTelemetryData.Extra2;
-                var extra3 = _objectTelemetryData.Extra3;
-                var wind = _objectTelemetryData.Wind;
+                var indAxis = new int[18];
+                var absValues = new bool[16];
+                var interfaceData = InterfaceData.interfaceData;
+                GetInterfaceAxisIndex(indAxis, ref interfaceData);
+                var bytes = Encoding.ASCII.GetBytes(interfaceData);
 
-                _axisAssignmentsA.ProcessingData(pitch, roll, yaw, surge, sway, heave, extra1, extra2, extra3, wind);
-                _axisAssignmentsB.ProcessingData(pitch, roll, yaw, surge, sway, heave, extra1, extra2, extra3, wind);
-
-                for (var i = 0; i < 8; i++)
+                while (true)
                 {
-                    _lastAxisA[i] = _axisAssignmentsA.GetAxis(i, ref absValues[i]);
-                    _lastAxisB[i] = _axisAssignmentsA.GetAxis(i, ref absValues[i + 8]);
-                }
+                    var pitch = _objectTelemetryData.Pitch;
+                    var roll = _objectTelemetryData.Roll;
+                    var yaw = _objectTelemetryData.Yaw;
+                    var surge = _objectTelemetryData.Surge;
+                    var sway = _objectTelemetryData.Sway;
+                    var heave = _objectTelemetryData.Heave;
+                    var extra1 = _objectTelemetryData.Extra1;
+                    var extra2 = _objectTelemetryData.Extra2;
+                    var extra3 = _objectTelemetryData.Extra3;
+                    var wind = _objectTelemetryData.Wind;
 
-                _lastAxisA[8] = _axisAssignmentsA.GetAxis9();
-                _lastAxisB[8] = _axisAssignmentsB.GetAxis9();
+                    _axisAssignmentsA.ProcessingData(pitch, roll, yaw, surge, sway, heave, extra1, extra2, extra3,
+                        wind);
+                    _axisAssignmentsB.ProcessingData(pitch, roll, yaw, surge, sway, heave, extra1, extra2, extra3,
+                        wind);
 
-                var numbers = new byte[18];
-                for (var index = 0; index < 8; ++index)
-                {
-                    numbers[index] = (byte)(sbyte.MaxValue * _lastAxisA[index] + sbyte.MaxValue);
-                    numbers[index + 8] = (byte)(sbyte.MaxValue * _lastAxisB[index] + sbyte.MaxValue);
-                }
-
-                numbers[16] = (byte)_lastAxisA[8];
-                numbers[17] = (byte)_lastAxisB[8];
-
-                for (var index = 0; index < 16; ++index)
-                {
-                    if (indAxis[index] < 0)
+                    for (int i = 0; i < 8; i++)
                     {
-                        continue;
+                        _lastAxisA[i] = _axisAssignmentsA.GetAxis(i, ref absValues[i]);
+                        _lastAxisB[i] = _axisAssignmentsB.GetAxis(i, ref absValues[i + 8]);
+                    }
+                    
+                    _lastAxisA[8] = _axisAssignmentsA.GetAxis9();
+                    _lastAxisB[8] = _axisAssignmentsB.GetAxis9();
+                    
+                    var numbers = new byte[18];
+                    for (var index = 0; index < 8; ++index)
+                    {
+                        numbers[index] = (byte)(sbyte.MaxValue * _lastAxisA[index] + sbyte.MaxValue);
+                        numbers[index + 8] = (byte)(sbyte.MaxValue * _lastAxisB[index] + sbyte.MaxValue);
                     }
 
-                    var hexBytes = GetHexBytes(numbers[index]);
-                    bytes[indAxis[index]] = hexBytes[0];
-                    bytes[indAxis[index] + 1] = hexBytes[1];
-                }
+                    numbers[16] = (byte)_lastAxisA[8];
+                    numbers[17] = (byte)_lastAxisB[8];
 
-                if (indAxis[16] >= 0)
-                {
-                    var decimalBytes = GetDecimalBytes(numbers[16]);
-                    bytes[indAxis[16]] = decimalBytes[0];
-                    bytes[indAxis[16] + 1] = decimalBytes[1];
-                    bytes[indAxis[16] + 2] = decimalBytes[2];
-                }
+                    for (var index = 0; index < 16; ++index)
+                    {
+                        if (indAxis[index] < 0)
+                        {
+                            continue;
+                        }
 
-                if (indAxis[17] >= 0)
-                {
-                    var decimalBytes = GetDecimalBytes(numbers[17]);
-                    bytes[indAxis[17]] = decimalBytes[0];
-                    bytes[indAxis[17] + 1] = decimalBytes[1];
-                    bytes[indAxis[17] + 2] = decimalBytes[2];
-                }
+                        var hexBytes = GetHexBytes(numbers[index]);
+                        bytes[indAxis[index]] = hexBytes[0];
+                        bytes[indAxis[index] + 1] = hexBytes[1];
+                    }
 
-                if (SettingsData.isRunning)
-                {
-                    _sData = Encoding.Default.GetString(bytes);
-                    // Debug.Log(_sData);
-                }
+                    if (indAxis[16] >= 0)
+                    {
+                        var decimalBytes = GetDecimalBytes(numbers[16]);
+                        bytes[indAxis[16]] = decimalBytes[0];
+                        bytes[indAxis[16] + 1] = decimalBytes[1];
+                        bytes[indAxis[16] + 2] = decimalBytes[2];
+                    }
 
-                try
-                {
-                    ComPort.Write(bytes);
+                    if (indAxis[17] >= 0)
+                    {
+                        var decimalBytes = GetDecimalBytes(numbers[17]);
+                        bytes[indAxis[17]] = decimalBytes[0];
+                        bytes[indAxis[17] + 1] = decimalBytes[1];
+                        bytes[indAxis[17] + 2] = decimalBytes[2];
+                    }
 
-                    // var str = "";
-                    //
-                    // for (var index = 0; index < 18; ++index)
-                    // {
-                    //     str = str + nums[index] + " ";
-                    // }
-                    //
-                    // Debug.Log(str);
-                }
-                catch
-                {
-                }
+                    if (SettingsData.isRunning)
+                    {
+                        _sData = Encoding.Default.GetString(bytes);
+                        // Debug.Log(_sData);
+                    }
 
-                if (SettingsData.isRunning == false)
-                {
-                    Thread.Sleep(100);
-                    ComPort.Disconnect();
-                }
+                    try
+                    {
+                        ComPort.Write(bytes);
+                    }
+                    catch
+                    {
+                    }
 
-                Thread.Sleep(InterfaceData.interfaceData_msec);
-            }
-        }).Start();
+                    if (SettingsData.isRunning == false)
+                    {
+                        Thread.Sleep(100);
+                        ComPort.Disconnect();
+                    }
+
+                    Thread.Sleep(InterfaceData.interfaceData_msec);
+                }
+            });
+            _threadStart.Start();
+        }
 
 
         private static void GetInterfaceAxisIndex(int[] indAxis, ref string interfaceData)
@@ -221,6 +220,11 @@ namespace DOF
             }
 
             return Encoding.ASCII.GetBytes(value.ToString("000"));
+        }
+
+        public void Dispose()
+        {
+            _threadStart?.Abort();
         }
     }
 }

@@ -1,4 +1,5 @@
 using RJCP.IO.Ports;
+using UnityEngine;
 
 namespace DOF
 {
@@ -21,6 +22,10 @@ namespace DOF
                 PortName = "COM" + comPortNumber
             };
 
+            Debug.Log("Connecting to COM port");
+            Debug.Log("Port name: " + serialPort.PortName);
+            Debug.Log("Is open: " + serialPort.IsOpen);
+            
             try
             {
                 serialPort.Open();
@@ -35,6 +40,7 @@ namespace DOF
 
         public static void Disconnect()
         {
+            Debug.Log("Disconnecting from COM port");
             try
             {
                 if (IsOpen())
@@ -64,6 +70,16 @@ namespace DOF
                 if (IsOpen())
                 {
                     serialPort.Write(bytes, 0, bytes.Length);
+                    var str = "";
+                    for (var index = 0; index < 18; ++index)
+                    {
+                        str = str + bytes[index] + " ";
+                    }
+                    Debug.Log(str);
+                }
+                else
+                {
+                    Debug.Log("Serial port is not open");
                 }
             }
             catch { }

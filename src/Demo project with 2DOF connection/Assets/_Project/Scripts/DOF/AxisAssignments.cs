@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using DOF.Data;
 using DOF.Data.Dynamic;
 using DOF.Data.Static;
 
@@ -13,22 +12,22 @@ namespace DOF
             _a = a;
             for (var index = 0; index < 48; ++index)
             {
-                _clsFilters[index] = new ClsFilters();
+                _clsFiltersArray[index] = new ClsFilters();
             }
 
             for (var index = 0; index < 48; ++index)
             {
-                _clsFilters2[index] = new ClsFilters();
+                _clsFiltersArray2[index] = new ClsFilters();
             }
         }
 
         private readonly bool _a;
         private bool[] _absValues = new bool[8];
         private double[] _axis = new double[9];
-        private AxisDofData[] _axisDofs;
-        private AxisDofData[] _axisDofs2;
-        private readonly ClsFilters[] _clsFilters = new ClsFilters[48];
-        private readonly ClsFilters[] _clsFilters2 = new ClsFilters[48];
+        private AxisDofData[] _axisDofDataArray;
+        private AxisDofData[] _axisDofDataArray2;
+        private readonly ClsFilters[] _clsFiltersArray = new ClsFilters[48];
+        private readonly ClsFilters[] _clsFiltersArray2 = new ClsFilters[48];
         private int _coefWind;
         private double _maxExtra1;
         private double _maxExtra2;
@@ -55,8 +54,8 @@ namespace DOF
         {
             for (var index = 0; index < 48; ++index)
             {
-                _clsFilters[index].Free();
-                _clsFilters2[index].Free();
+                _clsFiltersArray[index].Free();
+                _clsFiltersArray2[index].Free();
             }
         }
 
@@ -68,8 +67,8 @@ namespace DOF
         {
             _coefWind = coefWind;
             _typeWind = typeWind;
-            _axisDofs = axisDofs;
-            _axisDofs2 = axisDofs2;
+            _axisDofDataArray = axisDofs;
+            _axisDofDataArray2 = axisDofs2;
             _procWind = procWind;
             _minPitch = minPitch;
             _maxPitch = maxPitch;
@@ -117,13 +116,13 @@ namespace DOF
 
             for (var index = 0; index < 48; ++index)
             {
-                _clsFilters[index].SetSmoothingValue(axisDofs[index].Smoothing);
-                _clsFilters[index].SetSmoothingValueSim(axisDofs[index].SmoothingSim);
-                _clsFilters[index].SetNonlinearValue(axisDofs[index].Nonlinear);
-                _clsFilters[index].SetDeadzoneValue(axisDofs[index].Deathzone);
-                _clsFilters[index].SetDeadzoneToZeroValue(axisDofs[index].DeathToZero);
-                _clsFilters[index].SetDeadToZeroTimeValue(axisDofs[index].DeathToZeroTime);
-                _clsFilters[index].SetDeadToZeroIntervalValue(axisDofs[index].DeathToZeroInterval);
+                _clsFiltersArray[index].SetSmoothingValue(axisDofs[index].Smoothing);
+                _clsFiltersArray[index].SetSmoothingValueSim(axisDofs[index].SmoothingSim);
+                _clsFiltersArray[index].SetNonlinearValue(axisDofs[index].Nonlinear);
+                _clsFiltersArray[index].SetDeadzoneValue(axisDofs[index].Deathzone);
+                _clsFiltersArray[index].SetDeadzoneToZeroValue(axisDofs[index].DeathToZero);
+                _clsFiltersArray[index].SetDeadToZeroTimeValue(axisDofs[index].DeathToZeroTime);
+                _clsFiltersArray[index].SetDeadToZeroIntervalValue(axisDofs[index].DeathToZeroInterval);
 
                 var minValue = 0.0;
                 var maxValue = 0.0;
@@ -168,18 +167,18 @@ namespace DOF
                         break;
                 }
 
-                _clsFilters[index].SetAntirollValue(axisDofs[index].Antiroll, minValue, maxValue);
+                _clsFiltersArray[index].SetAntirollValue(axisDofs[index].Antiroll, minValue, maxValue);
             }
 
             for (var index = 0; index < 48; ++index)
             {
-                _clsFilters2[index].SetSmoothingValue(axisDofs2[index].Smoothing);
-                _clsFilters2[index].SetSmoothingValueSim(axisDofs2[index].SmoothingSim);
-                _clsFilters2[index].SetNonlinearValue(axisDofs2[index].Nonlinear);
-                _clsFilters2[index].SetDeadzoneValue(axisDofs2[index].Deathzone);
-                _clsFilters2[index].SetDeadzoneToZeroValue(axisDofs2[index].DeathToZero);
-                _clsFilters2[index].SetDeadToZeroTimeValue(axisDofs2[index].DeathToZeroTime);
-                _clsFilters2[index].SetDeadToZeroIntervalValue(axisDofs2[index].DeathToZeroInterval);
+                _clsFiltersArray2[index].SetSmoothingValue(axisDofs2[index].Smoothing);
+                _clsFiltersArray2[index].SetSmoothingValueSim(axisDofs2[index].SmoothingSim);
+                _clsFiltersArray2[index].SetNonlinearValue(axisDofs2[index].Nonlinear);
+                _clsFiltersArray2[index].SetDeadzoneValue(axisDofs2[index].Deathzone);
+                _clsFiltersArray2[index].SetDeadzoneToZeroValue(axisDofs2[index].DeathToZero);
+                _clsFiltersArray2[index].SetDeadToZeroTimeValue(axisDofs2[index].DeathToZeroTime);
+                _clsFiltersArray2[index].SetDeadToZeroIntervalValue(axisDofs2[index].DeathToZeroInterval);
                 var minValue = 0.0;
                 var maxValue = 0.0;
 
@@ -223,7 +222,7 @@ namespace DOF
                         break;
                 }
 
-                _clsFilters2[index].SetAntirollValue(axisDofs2[index].Antiroll, minValue, maxValue);
+                _clsFiltersArray2[index].SetAntirollValue(axisDofs2[index].Antiroll, minValue, maxValue);
             }
         }
 
@@ -231,134 +230,13 @@ namespace DOF
         {
             for (var index = 0; index < 48; ++index)
             {
-                if (_axisDofs[index].Force == force && _axisDofs[index].Antiroll != 0)
+                if (_axisDofDataArray[index].Force == force && _axisDofDataArray[index].Antiroll != 0)
                 {
                     return true;
                 }
             }
 
             return false;
-        }
-
-        public double GetDofValue(
-            int index,
-            double pitch,
-            double roll,
-            double yaw,
-            double heave,
-            double sway,
-            double surge,
-            double extra1,
-            double extra2,
-            double extra3)
-        {
-            var num1 = 0.0;
-            AxisDofData[] axisDofDataArray;
-            ClsFilters[] clsFiltersArray;
-            if (index < 48)
-            {
-                axisDofDataArray = _axisDofs;
-                clsFiltersArray = _clsFilters;
-            }
-            else
-            {
-                axisDofDataArray = _axisDofs2;
-                clsFiltersArray = _clsFilters2;
-                index -= 48;
-            }
-
-            switch (axisDofDataArray[index].Force)
-            {
-                case nameof(pitch):
-                    num1 = pitch;
-                    break;
-                case nameof(roll):
-                    num1 = roll;
-                    break;
-                case nameof(yaw):
-                    num1 = yaw;
-                    break;
-                case nameof(heave):
-                    num1 = heave;
-                    break;
-                case nameof(sway):
-                    num1 = sway;
-                    break;
-                case nameof(surge):
-                    num1 = surge;
-                    break;
-                case "Ex1":
-                    num1 = extra1;
-                    break;
-                case "Ex2":
-                    num1 = extra2;
-                    break;
-                case "Ex3":
-                    num1 = extra3;
-                    break;
-            }
-
-            var startDeadZoneToZero = false;
-            var num2 = clsFiltersArray[index].dead_zone(num1, ref startDeadZoneToZero);
-            if (!startDeadZoneToZero)
-            {
-                var plusMinus = false;
-                num2 = clsFiltersArray[index].SmoothingPlusMinus(num2, ref plusMinus);
-                if (!plusMinus)
-                {
-                    var startAntiRoll = false;
-                    num2 = clsFiltersArray[index].Antiroll(num2, ref startAntiRoll);
-                    if (!startAntiRoll)
-                    {
-                        var num3 = clsFiltersArray[index].Smoothing(num2);
-                        num2 = clsFiltersArray[index].smoothing_sim(num3);
-                    }
-                }
-            }
-
-            switch (axisDofDataArray[index].Force)
-            {
-                case nameof(pitch):
-                    num2 = Function(num2, _minPitch, _maxPitch);
-                    break;
-                case nameof(roll):
-                    num2 = Function(num2, _minRoll, _maxRoll);
-                    break;
-                case nameof(yaw):
-                    num2 = Function(num2, _minYaw, _maxYaw);
-                    break;
-                case nameof(heave):
-                    num2 = Function(num2, _minHeave, _maxHeave);
-                    break;
-                case nameof(sway):
-                    num2 = Function(num2, _minSway, _maxSway);
-                    break;
-                case nameof(surge):
-                    num2 = Function(num2, _minSurge, _maxSurge);
-                    break;
-                case "Ex1":
-                    num2 = Function(num2, _minExtra1, _maxExtra1);
-                    break;
-                case "Ex2":
-                    num2 = Function(num2, _minExtra2, _maxExtra2);
-                    break;
-                case "Ex3":
-                    num2 = Function(num2, _minExtra3, _maxExtra3);
-                    break;
-            }
-
-            if (axisDofDataArray[index].Dir)
-            {
-                num2 *= -1.0;
-            }
-
-            return num2 * (0.01 * axisDofDataArray[index].Proc);
-
-            static double Function(double value, double valueMin, double valueMax)
-            {
-                return value < 0.0 ? valueMin != 0.0 ? value / -valueMin : 0.0 :
-                    valueMax != 0.0 ? value / valueMax : 0.0;
-            }
         }
 
         public void ProcessingData(double pitch, double roll, double yaw, double surge, double sway, double heave,
@@ -368,93 +246,93 @@ namespace DOF
             {
                 pitch = _maxPitch;
             }
-
+            
             if (pitch < _minPitch && !IsAntiRollEnabledForForce(nameof(pitch)))
             {
                 pitch = _minPitch;
             }
-
+            
             if (roll > _maxRoll && !IsAntiRollEnabledForForce(nameof(roll)))
             {
                 roll = _maxRoll;
             }
-
+            
             if (roll < _minRoll && !IsAntiRollEnabledForForce(nameof(roll)))
             {
                 roll = _minRoll;
             }
-
+            
             if (yaw > _maxYaw && !IsAntiRollEnabledForForce(nameof(yaw)))
             {
                 yaw = _maxYaw;
             }
-
+            
             if (yaw < _minYaw && !IsAntiRollEnabledForForce(nameof(yaw)))
             {
                 yaw = _minYaw;
             }
-
+            
             if (surge > _maxSurge && !IsAntiRollEnabledForForce(nameof(surge)))
             {
                 surge = _maxSurge;
             }
-
+            
             if (surge < _minSurge && !IsAntiRollEnabledForForce(nameof(surge)))
             {
                 surge = _minSurge;
             }
-
+            
             if (sway > _maxSway && !IsAntiRollEnabledForForce(nameof(sway)))
             {
                 sway = _maxSway;
             }
-
+            
             if (sway < _minSway && !IsAntiRollEnabledForForce(nameof(sway)))
             {
                 sway = _minSway;
             }
-
+            
             if (heave > _maxHeave && !IsAntiRollEnabledForForce(nameof(heave)))
             {
                 heave = _maxHeave;
             }
-
+            
             if (heave < _minHeave && !IsAntiRollEnabledForForce(nameof(heave)))
             {
                 heave = _minHeave;
             }
-
+            
             if (extra1 > _maxExtra1 && !IsAntiRollEnabledForForce("Ex1"))
             {
                 extra1 = _maxExtra1;
             }
-
+            
             if (extra1 < _minExtra1 && !IsAntiRollEnabledForForce("Ex1"))
             {
                 extra1 = _minExtra1;
             }
-
+            
             if (extra2 > _maxExtra2 && !IsAntiRollEnabledForForce("Ex2"))
             {
                 extra2 = _maxExtra2;
             }
-
+            
             if (extra2 < _minExtra2 && !IsAntiRollEnabledForForce("Ex2"))
             {
                 extra2 = _minExtra2;
             }
-
+            
             if (extra3 > _maxExtra3 && !IsAntiRollEnabledForForce("Ex3"))
             {
                 extra3 = _maxExtra3;
             }
-
+            
             if (extra3 < _minExtra3 && !IsAntiRollEnabledForForce("Ex3"))
             {
                 extra3 = _minExtra3;
             }
-
-            if (_axisDofs == null)
+            
+            if (_axis == null)
             {
                 return;
             }
@@ -558,11 +436,162 @@ namespace DOF
             _axis[8] = _typeWind != 0 ? _coefWind : wind * (0.01 * _procWind) * (_coefWind / 100.0);
         }
 
+        private double GetDofValue(int index, double pitch, double roll, double yaw, double heave, double sway,
+            double surge, double extra1, double extra2, double extra3)
+        {
+            if (index == 0)
+            {
+            }
+
+
+            var num1 = 0.0;
+            AxisDofData[] axisDofDataArray;
+            ClsFilters[] clsFiltersArray;
+            if (index < 48)
+            {
+                axisDofDataArray = _axisDofDataArray;
+                clsFiltersArray = _clsFiltersArray;
+            }
+            else
+            {
+                axisDofDataArray = _axisDofDataArray2;
+                clsFiltersArray = _clsFiltersArray2;
+                index -= 48;
+            }
+
+            switch (axisDofDataArray[index].Force)
+            {
+                case "Pitch":
+                    num1 = pitch;
+                    break;
+                case "Roll":
+                    num1 = roll;
+                    break;
+                case "Yaw":
+                    num1 = yaw;
+                    break;
+                case "Heave":
+                    num1 = heave;
+                    break;
+                case "Sway":
+                    num1 = sway;
+                    break;
+                case "Surge":
+                    num1 = surge;
+                    break;
+                case "Ex1":
+                    num1 = extra1;
+                    break;
+                case "Ex2":
+                    num1 = extra2;
+                    break;
+                case "Ex3":
+                    num1 = extra3;
+                    break;
+            }
+
+            var startDeadZoneToZero = false;
+            var num2 = clsFiltersArray[index].dead_zone(num1, ref startDeadZoneToZero);
+            if (!startDeadZoneToZero)
+            {
+                var plusMinus = false;
+                num2 = clsFiltersArray[index].SmoothingPlusMinus(num2, ref plusMinus);
+                if (!plusMinus)
+                {
+                    var startAntiRoll = false;
+                    num2 = clsFiltersArray[index].Antiroll(num2, ref startAntiRoll);
+                    if (!startAntiRoll)
+                    {
+                        var num3 = clsFiltersArray[index].Smoothing(num2);
+                        num2 = clsFiltersArray[index].smoothing_sim(num3);
+                    }
+                }
+            }
+
+            switch (axisDofDataArray[index].Force)
+            {
+                case "Pitch":
+                    num2 = Function(num2, _minPitch, _maxPitch);
+                    break;
+                case "Roll":
+                    num2 = Function(num2, _minRoll, _maxRoll);
+                    break;
+                case "Yaw":
+                    num2 = Function(num2, _minYaw, _maxYaw);
+                    break;
+                case "Heave":
+                    num2 = Function(num2, _minHeave, _maxHeave);
+                    break;
+                case "Sway":
+                    num2 = Function(num2, _minSway, _maxSway);
+                    break;
+                case "Surge":
+                    num2 = Function(num2, _minSurge, _maxSurge);
+                    break;
+                case "Ex1":
+                    num2 = Function(num2, _minExtra1, _maxExtra1);
+                    break;
+                case "Ex2":
+                    num2 = Function(num2, _minExtra2, _maxExtra2);
+                    break;
+                case "Ex3":
+                    num2 = Function(num2, _minExtra3, _maxExtra3);
+                    break;
+            }
+
+            if (axisDofDataArray[index].Dir)
+            {
+                num2 *= -1.0;
+            }
+
+            return num2 * (0.01 * axisDofDataArray[index].Proc);
+
+            static double Function(double value, double valueMin, double valueMax)
+            {
+                return value < 0.0 ? valueMin != 0.0 ? value / -valueMin : 0.0 :
+                    valueMax != 0.0 ? value / valueMax : 0.0;
+            }
+        }
+
         public double GetAxis(int index, ref bool absValue)
         {
             absValue = _absValues[index];
-            return !absValue ? _axis[index] <= 1.0 ? _axis[index] >= -1.0 ? _axis[index] : -1.0 : 1.0 :
-                _axis[index] <= byte.MaxValue ? _axis[index] >= 0.0 ? _axis[index] : 0.0 : byte.MaxValue;
+            if (!absValue)
+            {
+                if (_axis[index] <= 1.0)
+                {
+                    if (_axis[index] >= -1.0)
+                    {
+                        return _axis[index];
+                    }
+                    else
+                    {
+                        return -1.0;
+                    }
+                }
+                else
+                {
+                    return 1.0;
+                }
+            }
+            else
+            {
+                if (_axis[index] <= byte.MaxValue)
+                {
+                    if (_axis[index] >= 0.0)
+                    {
+                        return _axis[index];
+                    }
+                    else
+                    {
+                        return 0.0;
+                    }
+                }
+                else
+                {
+                    return byte.MaxValue;
+                }
+            }
         }
 
         public double GetAxis9()
