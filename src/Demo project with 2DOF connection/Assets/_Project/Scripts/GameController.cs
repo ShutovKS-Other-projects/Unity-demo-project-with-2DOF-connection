@@ -1,20 +1,17 @@
-using System.Collections;
 using System.IO;
 using DOF;
 using DOF.Data.Dynamic;
 using Newtonsoft.Json;
 using UnityEngine;
 
-public class GameController : MonoBehaviour, ICoroutineRunner
+public class GameController : MonoBehaviour
 {
     [SerializeField] private CarTelemetryHandler _carTelemetryHandler;
     private ObjectTelemetryData _objectTelemetryData;
     private DataProcessingAndTransmission _dataProcessingAndTransmission;
-    private ComPort _comPort;
 
     private void Start()
     {
-        ConnectDevice();
         InitializeParameters();
     }
 
@@ -27,8 +24,7 @@ public class GameController : MonoBehaviour, ICoroutineRunner
         _dataProcessingAndTransmission = new DataProcessingAndTransmission(
             _objectTelemetryData,
             new AxisAssignments(true),
-            new AxisAssignments(false),
-            _comPort);
+            new AxisAssignments(false));
         
         var inputDirectory = @"C:\Users\ShutovKS\Documents\projects\Unity-demo-project-with-2DOF-connection\src\Demo project with 2DOF connection\Assets\_Project\Data\Json";
 
@@ -53,16 +49,4 @@ public class GameController : MonoBehaviour, ICoroutineRunner
         
         _dataProcessingAndTransmission.Start();
     }
-
-    private void ConnectDevice()
-    {
-        _comPort = new ComPort();
-        _comPort.TryConnect();
-    }
-}
-
-public interface ICoroutineRunner
-{
-    Coroutine StartCoroutine(IEnumerator enumerator);
-    void StopCoroutine(Coroutine coroutine);
 }

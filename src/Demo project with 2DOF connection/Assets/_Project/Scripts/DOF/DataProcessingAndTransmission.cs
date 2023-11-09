@@ -14,19 +14,16 @@ namespace DOF
         public DataProcessingAndTransmission(
             ObjectTelemetryData objectTelemetryData,
             AxisAssignments axisAssignmentsA,
-            AxisAssignments axisAssignmentsB,
-            ComPort comPort)
+            AxisAssignments axisAssignmentsB)
         {
             _objectTelemetryData = objectTelemetryData;
             _axisAssignmentsA = axisAssignmentsA;
             _axisAssignmentsB = axisAssignmentsB;
-            _comPort = comPort;
         }
 
         private ObjectTelemetryData _objectTelemetryData;
         private AxisAssignments _axisAssignmentsA;
         private AxisAssignments _axisAssignmentsB;
-        private readonly ComPort _comPort;
         private Thread _threadRunner;
         private double[] _lastAxisA = new double[9];
         private double[] _lastAxisB = new double[9];
@@ -146,7 +143,6 @@ namespace DOF
                     if (SettingsData.isRunning == false)
                     {
                         Thread.Sleep(100);
-                        _comPort.Disconnect();
                     }
 
                     Thread.Sleep(InterfaceData.interfaceData_msec);
