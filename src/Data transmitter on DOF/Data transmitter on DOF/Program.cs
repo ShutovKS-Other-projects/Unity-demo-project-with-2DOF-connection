@@ -1,35 +1,23 @@
-﻿using System.Net;
-using System.Net.Sockets;
-using System.Text;
+﻿using System.IO.MemoryMappedFiles;
 using Test_connected_to_COM_Port;
 
-var port = 12345;
-var ipAddress = IPAddress.Parse("127.0.0.1");
-var listener = new TcpListener(ipAddress, port);
-listener.Start();
+const string MAP_NAME = "2DOF";
+const int DATA_SIZE = 12 * sizeof(byte);
 
-Console.WriteLine();
-
-Console.WriteLine(ComPort_SerialPortStream.TryConnect());
-
-var task = new Task(async () =>
+var task = new Task(() =>
 {
+    using var memoryMappedFile = MemoryMappedFile.CreateOrOpen(MAP_NAME, DATA_SIZE);
+
     while (true)
     {
-        var client = await listener.AcceptTcpClientAsync();
-        
-        await using (var stream = client.GetStream())
-        {
-            var receivedData = new byte[1024];
-            var bytesRead = await stream.ReadAsync(receivedData);
-            var actualData = new byte[bytesRead];
-            Array.Copy(receivedData, actualData, bytesRead);
-            ComPort_SerialPortStream.Write(actualData);
-            var receivedMessage = Encoding.UTF8.GetString(actualData);
-            Console.WriteLine("Полученные данные: " + receivedMessage);
-        }
+        using var accessor = memoryMappedFile.CreateViewAccessor();
 
-        client.Close();
+        var receivedData = new byte[12];
+
+        accessor.ReadArray(0, receivedData, 0, 12);
+
+        ComPort_SerialPortStream.Write(receivedData);
+
         Thread.Sleep(20);
     }
 });

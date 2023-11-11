@@ -1,3 +1,4 @@
+using System.Text;
 using RJCP.IO.Ports;
 
 namespace Test_connected_to_COM_Port
@@ -67,16 +68,10 @@ namespace Test_connected_to_COM_Port
                 if (IsOpen())
                 {
                     serialPort.Write(bytes, 0, bytes.Length);
-                    var str = "";
-                    for (var index = 0; index < 18; ++index)
-                    {
-                        str = str + bytes[index] + " ";
-                    }
-                    Console.WriteLine(str);
                 }
                 else
                 {
-                    Console.WriteLine("Serial port is not open");
+                    Console.WriteLine(Encoding.Default.GetString(bytes));
                 }
             }
             catch { }

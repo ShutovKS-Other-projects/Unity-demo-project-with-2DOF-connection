@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.IO.MemoryMappedFiles;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -153,12 +154,12 @@ namespace DOF
 
         private void ShippingToPort(byte[] bytes)
         {
-            const int PORT = 12345;
-            const string IP_ADDRESS = "127.0.0.1";
-            using var client = new TcpClient(IP_ADDRESS, PORT);
-            using var stream = client.GetStream();
-            stream.WriteAsync(bytes, 0, bytes.Length);
-            Console.WriteLine("Данные отправлены.");
+            const string MAP_NAME = "2DOF";
+            const int DATA_SIZE = 12 * sizeof(byte);
+
+            using var memoryMappedFile = MemoryMappedFile.OpenExisting(MAP_NAME);
+            using var accessor = memoryMappedFile.CreateViewAccessor();
+            accessor.WriteArray(0, bytes, 0, 12);
         }
 
 
