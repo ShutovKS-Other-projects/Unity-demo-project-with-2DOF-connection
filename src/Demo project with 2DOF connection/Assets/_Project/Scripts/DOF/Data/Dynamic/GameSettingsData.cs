@@ -1,10 +1,39 @@
+#region
+
 using System;
+
+#endregion
 
 namespace DOF.Data.Dynamic
 {
     [Serializable]
     public class GameSettingsData
     {
+        public GameSettingsData(double maxRoll, double minRoll, double maxPitch, double minPitch,
+            double maxYaw, double minYaw, double maxHeave, double minHeave, double maxSway, double minSway,
+            double maxSurge, double minSurge, double maxExtra1, double minExtra1, double maxExtra2, double minExtra2,
+            double maxExtra3, double minExtra3)
+        {
+            MaxRoll = maxRoll;
+            MinRoll = minRoll;
+            MaxPitch = maxPitch;
+            MinPitch = minPitch;
+            MaxYaw = maxYaw;
+            MinYaw = minYaw;
+            MaxHeave = maxHeave;
+            MinHeave = minHeave;
+            MaxSway = maxSway;
+            MinSway = minSway;
+            MaxSurge = maxSurge;
+            MinSurge = minSurge;
+            MaxExtra1 = maxExtra1;
+            MinExtra1 = minExtra1;
+            MaxExtra2 = maxExtra2;
+            MinExtra2 = minExtra2;
+            MaxExtra3 = maxExtra3;
+            MinExtra3 = minExtra3;
+        }
+
         public double MaxRoll { get; set; }
         public double MinRoll { get; set; }
 
@@ -31,30 +60,5 @@ namespace DOF.Data.Dynamic
 
         public double MaxExtra3 { get; set; }
         public double MinExtra3 { get; set; }
-
-        public GameSettingsData(double maxRoll, double minRoll, double maxPitch, double minPitch,
-            double maxYaw, double minYaw, double maxHeave, double minHeave, double maxSway, double minSway,
-            double maxSurge, double minSurge, double maxExtra1, double minExtra1, double maxExtra2, double minExtra2,
-            double maxExtra3, double minExtra3)
-        {
-            MaxRoll = maxRoll;
-            MinRoll = minRoll;
-            MaxPitch = maxPitch;
-            MinPitch = minPitch;
-            MaxYaw = maxYaw;
-            MinYaw = minYaw;
-            MaxHeave = maxHeave;
-            MinHeave = minHeave;
-            MaxSway = maxSway;
-            MinSway = minSway;
-            MaxSurge = maxSurge;
-            MinSurge = minSurge;
-            MaxExtra1 = maxExtra1;
-            MinExtra1 = minExtra1;
-            MaxExtra2 = maxExtra2;
-            MinExtra2 = minExtra2;
-            MaxExtra3 = maxExtra3;
-            MinExtra3 = minExtra3;
-        }
     }
 }

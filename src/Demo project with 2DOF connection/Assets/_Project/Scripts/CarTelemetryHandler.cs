@@ -1,23 +1,22 @@
+#region
+
 using DOF.Data.Dynamic;
 using UnityEngine;
+
+#endregion
 
 public class CarTelemetryHandler : MonoBehaviour
 {
     [SerializeField] private Transform vehicleTransform;
     private ObjectTelemetryData _telemetryDataData;
 
-    public void SetObjectTelemetryData(ObjectTelemetryData objectTelemetryData)
-    {
-        _telemetryDataData = objectTelemetryData;
-    }
-    
     private void Update()
     {
         if (_telemetryDataData == null)
         {
             return;
         }
-        
+
         var rotation = vehicleTransform.rotation;
         _telemetryDataData.Pitch = rotation.eulerAngles.x;
         _telemetryDataData.Roll = rotation.eulerAngles.z;
@@ -33,5 +32,10 @@ public class CarTelemetryHandler : MonoBehaviour
         _telemetryDataData.Extra3 = 0.0;
 
         _telemetryDataData.Wind = 0.0;
+    }
+
+    public void SetObjectTelemetryData(ObjectTelemetryData objectTelemetryData)
+    {
+        _telemetryDataData = objectTelemetryData;
     }
 }

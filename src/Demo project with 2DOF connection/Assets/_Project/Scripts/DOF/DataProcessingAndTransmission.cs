@@ -1,11 +1,14 @@
+#region
+
 using System;
-using System.Collections;
-using System.Net.Sockets;
+using System.IO.MemoryMappedFiles;
 using System.Text;
 using System.Threading;
 using DOF.Data.Dynamic;
 using DOF.Data.Static;
 using UnityEngine;
+
+#endregion
 
 namespace DOF
 {
@@ -21,13 +24,19 @@ namespace DOF
             _axisAssignmentsB = axisAssignmentsB;
         }
 
-        private ObjectTelemetryData _objectTelemetryData;
-        private AxisAssignments _axisAssignmentsA;
-        private AxisAssignments _axisAssignmentsB;
-        private Thread _threadRunner;
-        private double[] _lastAxisA = new double[9];
-        private double[] _lastAxisB = new double[9];
+        private readonly AxisAssignments _axisAssignmentsA;
+        private readonly AxisAssignments _axisAssignmentsB;
+        private readonly double[] _lastAxisA = new double[9];
+        private readonly double[] _lastAxisB = new double[9];
+
+        private readonly ObjectTelemetryData _objectTelemetryData;
         private string _sData;
+        private Thread _threadRunner;
+
+        public void Dispose()
+        {
+            _threadRunner?.Abort();
+        }
 
         public void AxisAssignmentsSetUp(
             AxisDofData[] axisDofData1, AxisDofData[] axisDofData2, AxisDofData[] axisDofData3,
@@ -142,7 +151,7 @@ namespace DOF
 
                     if (SettingsData.isRunning == false)
                     {
-                        Thread.Sleep(100);
+                        Thread.Sleep(1000);
                     }
 
                     Thread.Sleep(InterfaceData.interfaceData_msec);
@@ -153,12 +162,11 @@ namespace DOF
 
         private void ShippingToPort(byte[] bytes)
         {
-            const int PORT = 12345;
-            const string IP_ADDRESS = "127.0.0.1";
-            using var client = new TcpClient(IP_ADDRESS, PORT);
-            using var stream = client.GetStream();
-            stream.WriteAsync(bytes, 0, bytes.Length);
-            Console.WriteLine("Данные отправлены.");
+            const string MAP_NAME = "2DOF";
+
+            using var memoryMappedFile = MemoryMappedFile.OpenExisting(MAP_NAME);
+            using var accessor = memoryMappedFile.CreateViewAccessor();
+            accessor.WriteArray(0, bytes, 0, 12);
         }
 
 
@@ -235,11 +243,6 @@ namespace DOF
             }
 
             return Encoding.ASCII.GetBytes(value.ToString("000"));
-        }
-
-        public void Dispose()
-        {
-            _threadRunner?.Abort();
         }
     }
 }

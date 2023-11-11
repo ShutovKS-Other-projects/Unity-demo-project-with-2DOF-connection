@@ -12,7 +12,7 @@ namespace DOF.Data.Dynamic
         public double Extra2 { get; set; }
         public double Extra3 { get; set; }
         public double Wind { get; set; }
-        
+
         public void Reset()
         {
             Pitch = 0.0;
