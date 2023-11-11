@@ -20,7 +20,7 @@ namespace DOF.Data.Dynamic
             Deathzone = 0;
             DeathToZero = 0;
         }
-        
+
         public byte AxisIndex { get; set; }
 
         public bool Dir { get; set; }

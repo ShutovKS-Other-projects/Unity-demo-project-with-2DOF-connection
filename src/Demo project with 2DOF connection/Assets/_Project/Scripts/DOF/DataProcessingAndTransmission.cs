@@ -1,12 +1,14 @@
+#region
+
 using System;
-using System.Collections;
 using System.IO.MemoryMappedFiles;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using DOF.Data.Dynamic;
 using DOF.Data.Static;
 using UnityEngine;
+
+#endregion
 
 namespace DOF
 {
@@ -22,13 +24,19 @@ namespace DOF
             _axisAssignmentsB = axisAssignmentsB;
         }
 
-        private ObjectTelemetryData _objectTelemetryData;
-        private AxisAssignments _axisAssignmentsA;
-        private AxisAssignments _axisAssignmentsB;
-        private Thread _threadRunner;
-        private double[] _lastAxisA = new double[9];
-        private double[] _lastAxisB = new double[9];
+        private readonly AxisAssignments _axisAssignmentsA;
+        private readonly AxisAssignments _axisAssignmentsB;
+        private readonly double[] _lastAxisA = new double[9];
+        private readonly double[] _lastAxisB = new double[9];
+
+        private readonly ObjectTelemetryData _objectTelemetryData;
         private string _sData;
+        private Thread _threadRunner;
+
+        public void Dispose()
+        {
+            _threadRunner?.Abort();
+        }
 
         public void AxisAssignmentsSetUp(
             AxisDofData[] axisDofData1, AxisDofData[] axisDofData2, AxisDofData[] axisDofData3,
@@ -143,7 +151,7 @@ namespace DOF
 
                     if (SettingsData.isRunning == false)
                     {
-                        Thread.Sleep(100);
+                        Thread.Sleep(1000);
                     }
 
                     Thread.Sleep(InterfaceData.interfaceData_msec);
@@ -155,7 +163,6 @@ namespace DOF
         private void ShippingToPort(byte[] bytes)
         {
             const string MAP_NAME = "2DOF";
-            const int DATA_SIZE = 12 * sizeof(byte);
 
             using var memoryMappedFile = MemoryMappedFile.OpenExisting(MAP_NAME);
             using var accessor = memoryMappedFile.CreateViewAccessor();
@@ -236,11 +243,6 @@ namespace DOF
             }
 
             return Encoding.ASCII.GetBytes(value.ToString("000"));
-        }
-
-        public void Dispose()
-        {
-            _threadRunner?.Abort();
         }
     }
 }

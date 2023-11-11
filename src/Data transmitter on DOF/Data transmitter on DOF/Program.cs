@@ -1,5 +1,9 @@
-﻿using System.IO.MemoryMappedFiles;
+﻿#region
+
+using System.IO.MemoryMappedFiles;
 using Test_connected_to_COM_Port;
+
+#endregion
 
 const string MAP_NAME = "2DOF";
 const int DATA_SIZE = 12 * sizeof(byte);
