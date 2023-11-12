@@ -1,20 +1,20 @@
 #region
 
+using System.IO.Ports;
 using System.Text;
-using RJCP.IO.Ports;
 
 #endregion
 
-namespace Test_connected_to_COM_Port;
+namespace Test_connected_to_COM_Port.Scripts.Dispatch;
 
-public static class ComPort_SerialPortStream
+public static class ComPort
 {
-    private static SerialPortStream serialPort;
+    private static SerialPort serialPort;
 
     public static bool TryConnect(int comPortNumber = 3, int baudRate = 115200, int dataBits = 8,
         StopBits stopBits = StopBits.One)
     {
-        serialPort = new SerialPortStream
+        serialPort = new SerialPort
         {
             BaudRate = baudRate,
             DataBits = dataBits,
@@ -26,14 +26,16 @@ public static class ComPort_SerialPortStream
             PortName = "COM" + comPortNumber
         };
 
-        Console.WriteLine("SerialPortStream, Connecting to COM port");
+        Console.WriteLine("ComPort_SerialPort, Connecting to COM port");
 
         try
         {
             serialPort.Open();
+            Console.WriteLine("true");
         }
         catch
         {
+            Console.WriteLine("false");
             return false;
         }
 
@@ -71,6 +73,9 @@ public static class ComPort_SerialPortStream
 
     public static void Write(byte[] bytes)
     {
+        // Console.Clear();
+        Console.WriteLine(Encoding.Default.GetString(bytes));
+        
         try
         {
             if (IsOpen())
@@ -79,7 +84,7 @@ public static class ComPort_SerialPortStream
             }
             else
             {
-                Console.WriteLine(Encoding.Default.GetString(bytes));
+                // Console.WriteLine("Serial port is not open");
             }
         }
         catch
