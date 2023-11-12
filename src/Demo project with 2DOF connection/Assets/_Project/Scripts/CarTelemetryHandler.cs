@@ -1,6 +1,5 @@
 #region
 
-using DOF.Data.Dynamic;
 using UnityEngine;
 
 #endregion
@@ -10,7 +9,7 @@ public class CarTelemetryHandler : MonoBehaviour
     [SerializeField] private Transform vehicleTransform;
     private ObjectTelemetryData _telemetryDataData;
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (_telemetryDataData == null)
         {
@@ -26,12 +25,6 @@ public class CarTelemetryHandler : MonoBehaviour
         _telemetryDataData.Surge = position.z;
         _telemetryDataData.Sway = position.x;
         _telemetryDataData.Heave = position.y;
-
-        _telemetryDataData.Extra1 = 0.0;
-        _telemetryDataData.Extra2 = 0.0;
-        _telemetryDataData.Extra3 = 0.0;
-
-        _telemetryDataData.Wind = 0.0;
     }
 
     public void SetObjectTelemetryData(ObjectTelemetryData objectTelemetryData)
