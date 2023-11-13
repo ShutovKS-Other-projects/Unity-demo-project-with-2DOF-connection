@@ -4,6 +4,7 @@ using System.IO.MemoryMappedFiles;
 using Newtonsoft.Json;
 using Test_connected_to_COM_Port.Scripts.Data.Constant;
 using Test_connected_to_COM_Port.Scripts.Data.Dynamic;
+using Test_connected_to_COM_Port.Scripts.Dispatch;
 using Test_connected_to_COM_Port.Scripts.Handler;
 
 #endregion
@@ -14,6 +15,7 @@ unsafe
     ObjectTelemetryData* objectTelemetryDataLink;
     Thread memoryDataGrabTask;
 
+    ComPort.TryConnect();
     InitializeParameters();
     InitializeMemoryDataGrabTask();
 
@@ -81,8 +83,7 @@ unsafe
 
         while (true)
         {
-            using var memoryMappedFile =
-                MemoryMappedFile.CreateOrOpen(MemoryDataGrabber.MAP_NAME, MemoryDataGrabber.DATA_SIZE);
+            using var memoryMappedFile = MemoryMappedFile.CreateOrOpen(MemoryDataGrabber.MAP_NAME, MemoryDataGrabber.DATA_SIZE);
             using var accessor = memoryMappedFile.CreateViewAccessor();
 
             var receivedData = new double[MemoryDataGrabber.DATA_COUNT];
@@ -95,12 +96,7 @@ unsafe
             objectTelemetryDataLink->Surge = receivedData[3];
             objectTelemetryDataLink->Sway = receivedData[4];
             objectTelemetryDataLink->Heave = receivedData[5];
-
-
-            var objectTelemetryData = *objectTelemetryDataLink;
-            // Console.WriteLine($"Pitch: {objectTelemetryData.Pitch}, Roll: {objectTelemetryData.Roll}, Yaw: {objectTelemetryData.Yaw}, Surge: {objectTelemetryData.Surge}, Sway: {objectTelemetryData.Sway}, Heave: {objectTelemetryData.Heave}");
-
-
+            
             Thread.Sleep(20);
         }
     }

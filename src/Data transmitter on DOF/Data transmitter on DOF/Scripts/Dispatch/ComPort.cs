@@ -73,9 +73,6 @@ public static class ComPort
 
     public static void Write(byte[] bytes)
     {
-        // Console.Clear();
-        Console.WriteLine(Encoding.Default.GetString(bytes));
-        
         try
         {
             if (IsOpen())
@@ -84,7 +81,7 @@ public static class ComPort
             }
             else
             {
-                // Console.WriteLine("Serial port is not open");
+                Console.WriteLine("Serial port is not open");
             }
         }
         catch
