@@ -1,42 +1,13 @@
 public class ObjectTelemetryData
 {
-    public double Pitch
-    {
-        get => DataArray[0];
-        set => DataArray[0] = value;
-    }
-
-    public double Roll
-    {
-        get => DataArray[1];
-        set => DataArray[1] = value;
-    }
-
-    public double Yaw
-    {
-        get => DataArray[2];
-        set => DataArray[2] = value;
-    }
-
-    public double Surge
-    {
-        get => DataArray[3];
-        set => DataArray[3] = value;
-    }
-
-    public double Sway
-    {
-        get => DataArray[4];
-        set => DataArray[4] = value;
-    }
-
-    public double Heave
-    {
-        get => DataArray[5];
-        set => DataArray[5] = value;
-    }
-
-    public double[] DataArray { get; private set; } = new double[6];
+    public double Pitch { get; set; }
+    public double Roll { get; set; }
+    public double Yaw { get; set; }
+    public double Surge { get; set; }
+    public double Sway { get; set; }
+    public double Heave { get; set; }
+    
+    public double[] DataArray => new[] {Pitch, Roll, Yaw, Surge, Sway, Heave};
 
     public void Reset()
     {
