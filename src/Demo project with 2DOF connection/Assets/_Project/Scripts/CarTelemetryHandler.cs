@@ -41,7 +41,7 @@ public class CarTelemetryHandler : MonoBehaviour
                 : rotation.eulerAngles.y;
             
             var velocity = _rigidbody.velocity;
-            _telemetryDataData.Surge = velocity.magnitude;
+            _telemetryDataData.Surge = velocity.z;
             _telemetryDataData.Sway = velocity.x;
             _telemetryDataData.Heave = velocity.y;
             
