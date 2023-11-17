@@ -1,67 +1,43 @@
 #region
 
-using System.IO;
-using DOF;
-using DOF.Data.Dynamic;
-using Newtonsoft.Json;
+using System.IO.MemoryMappedFiles;
+using System.Threading;
 using UnityEngine;
 
 #endregion
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private CarTelemetryHandler _carTelemetryHandler;
-    private DataProcessingAndTransmission _dataProcessingAndTransmission;
+    private const string MAP_NAME = "2DOFMemoryDataGrabber";
     private ObjectTelemetryData _objectTelemetryData;
 
-    private void Start()
+    [SerializeField] private CarTelemetryHandler _carTelemetryHandler;
+
+    private void Awake()
     {
         InitializeParameters();
+        new Thread(HandlerData).Start();
     }
 
     private void InitializeParameters()
     {
         _objectTelemetryData = new ObjectTelemetryData();
-
         _carTelemetryHandler.SetObjectTelemetryData(_objectTelemetryData);
+    }
 
-        _dataProcessingAndTransmission = new DataProcessingAndTransmission(
-            _objectTelemetryData,
-            new AxisAssignments(true),
-            new AxisAssignments(false));
+    private void HandlerData()
+    {
+        const int WAIT_TIME = 20;
 
-        var inputDirectory =
-            @"C:\Users\ShutovKS\Documents\projects\Unity-demo-project-with-2DOF-connection\src\Demo project with 2DOF connection\Assets\_Project\Data\Json";
+        using var memoryMappedFile = MemoryMappedFile.CreateOrOpen(MAP_NAME, _objectTelemetryData.DataArray.Length);
 
-        var gameSettingsData =
-            JsonConvert.DeserializeObject<GameSettingsData>(
-                File.ReadAllText(Path.Combine(inputDirectory, "gameSetting.json")));
+        while (true)
+        {
+            using var accessor = memoryMappedFile.CreateViewAccessor();
 
-        var axisDofData1 =
-            JsonConvert.DeserializeObject<AxisDofData[]>(
-                File.ReadAllText(Path.Combine(inputDirectory, "axisDofDataArray1.json")));
-        var axisDofData2 =
-            JsonConvert.DeserializeObject<AxisDofData[]>(
-                File.ReadAllText(Path.Combine(inputDirectory, "axisDofDataArray2.json")));
-        var axisDofData3 =
-            JsonConvert.DeserializeObject<AxisDofData[]>(
-                File.ReadAllText(Path.Combine(inputDirectory, "axisDofDataArray3.json")));
-        var axisDofData4 =
-            JsonConvert.DeserializeObject<AxisDofData[]>(
-                File.ReadAllText(Path.Combine(inputDirectory, "axisDofDataArray4.json")));
+            accessor.WriteArray(0, _objectTelemetryData.DataArray, 0, 6);
 
-        _dataProcessingAndTransmission.AxisAssignmentsSetUp(
-            axisDofData1, axisDofData2, axisDofData3, axisDofData4,
-            gameSettingsData.MinPitch, gameSettingsData.MaxPitch,
-            gameSettingsData.MinRoll, gameSettingsData.MaxRoll,
-            gameSettingsData.MinYaw, gameSettingsData.MaxYaw,
-            gameSettingsData.MinSurge, gameSettingsData.MaxSurge,
-            gameSettingsData.MinSway, gameSettingsData.MaxSway,
-            gameSettingsData.MinHeave, gameSettingsData.MaxHeave,
-            gameSettingsData.MinExtra1, gameSettingsData.MaxExtra1,
-            gameSettingsData.MinExtra2, gameSettingsData.MaxExtra2,
-            gameSettingsData.MinExtra3, gameSettingsData.MaxExtra3);
-
-        _dataProcessingAndTransmission.Start();
+            Thread.Sleep(WAIT_TIME);
+        }
     }
 }
