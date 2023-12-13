@@ -1,4 +1,4 @@
-namespace Test_connected_to_COM_Port.Scripts.Data.Dynamic;
+namespace DataTransmitterOnDOF.Data.Dynamic;
 
 [Serializable]
 public class GameSettingsData

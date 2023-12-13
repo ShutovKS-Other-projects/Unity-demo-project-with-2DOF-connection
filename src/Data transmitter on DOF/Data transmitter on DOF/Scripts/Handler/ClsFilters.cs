@@ -1,10 +1,10 @@
 #region
 
-using Test_connected_to_COM_Port.Scripts.Data.Static;
+using DataTransmitterOnDOF.Data.Static;
 
 #endregion
 
-namespace Test_connected_to_COM_Port.Scripts.Handler;
+namespace DataTransmitterOnDOF.Handler;
 
 public class ClsFilters
 {

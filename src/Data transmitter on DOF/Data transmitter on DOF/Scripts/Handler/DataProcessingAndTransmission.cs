@@ -1,13 +1,13 @@
 #region
 
 using System.Text;
-using Test_connected_to_COM_Port.Scripts.Data.Dynamic;
-using Test_connected_to_COM_Port.Scripts.Data.Static;
-using Test_connected_to_COM_Port.Scripts.Dispatch;
+using DataTransmitterOnDOF.Data.Dynamic;
+using DataTransmitterOnDOF.Data.Static;
+using DataTransmitterOnDOF.Dispatch;
 
 #endregion
 
-namespace Test_connected_to_COM_Port.Scripts.Handler;
+namespace DataTransmitterOnDOF.Handler;
 
 public class DataProcessingAndTransmission : IDisposable
 {

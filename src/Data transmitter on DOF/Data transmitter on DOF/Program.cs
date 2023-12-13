@@ -1,11 +1,11 @@
-﻿#region
+#region
 
 using System.IO.MemoryMappedFiles;
+using DataTransmitterOnDOF.Data.Constant;
+using DataTransmitterOnDOF.Data.Dynamic;
+using DataTransmitterOnDOF.Dispatch;
+using DataTransmitterOnDOF.Handler;
 using Newtonsoft.Json;
-using Test_connected_to_COM_Port.Scripts.Data.Constant;
-using Test_connected_to_COM_Port.Scripts.Data.Dynamic;
-using Test_connected_to_COM_Port.Scripts.Dispatch;
-using Test_connected_to_COM_Port.Scripts.Handler;
 
 #endregion
 

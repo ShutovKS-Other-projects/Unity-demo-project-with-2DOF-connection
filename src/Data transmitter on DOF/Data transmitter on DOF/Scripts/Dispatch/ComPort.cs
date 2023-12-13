@@ -1,11 +1,10 @@
 #region
 
 using System.IO.Ports;
-using System.Text;
 
 #endregion
 
-namespace Test_connected_to_COM_Port.Scripts.Dispatch;
+namespace DataTransmitterOnDOF.Dispatch;
 
 public static class ComPort
 {

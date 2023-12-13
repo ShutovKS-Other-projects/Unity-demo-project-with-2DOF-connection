@@ -1,10 +1,10 @@
 ﻿#region
 
-using Test_connected_to_COM_Port.Scripts.Data.Dynamic;
+using DataTransmitterOnDOF.Data.Dynamic;
 
 #endregion
 
-namespace Test_connected_to_COM_Port.Scripts.Handler;
+namespace DataTransmitterOnDOF.Handler;
 
 public class AxisAssignments
 {
