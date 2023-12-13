@@ -1,4 +1,4 @@
-#region
+﻿#region
 
 using System.IO.MemoryMappedFiles;
 using DataTransmitterOnDOF.Data.Constant;
@@ -32,7 +32,7 @@ unsafe
     void InitializeParameters()
     {
         var objectTelemetryData = new ObjectTelemetryData();
-        
+
         objectTelemetryDataLink = &objectTelemetryData;
         dataProcessingAndTransmission = new DataProcessingAndTransmission(
             ref objectTelemetryDataLink,
@@ -68,7 +68,7 @@ unsafe
 
         string GetPath(string fileName)
         {
-            return File.ReadAllText(Path.Combine(DirectoriesPaths.JSON_DATA_PATH, fileName));
+            return File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DirectoriesPaths.JSON_DATA_PATH, fileName));
         }
     }
 
@@ -83,7 +83,8 @@ unsafe
 
         while (true)
         {
-            using var memoryMappedFile = MemoryMappedFile.CreateOrOpen(MemoryDataGrabber.MAP_NAME, MemoryDataGrabber.DATA_SIZE);
+            using var memoryMappedFile =
+                MemoryMappedFile.CreateOrOpen(MemoryDataGrabber.MAP_NAME, MemoryDataGrabber.DATA_SIZE);
             using var accessor = memoryMappedFile.CreateViewAccessor();
 
             var receivedData = new double[MemoryDataGrabber.DATA_COUNT];
@@ -96,7 +97,7 @@ unsafe
             objectTelemetryDataLink->Surge = receivedData[3];
             objectTelemetryDataLink->Sway = receivedData[4];
             objectTelemetryDataLink->Heave = receivedData[5];
-            
+
             Thread.Sleep(20);
         }
     }
