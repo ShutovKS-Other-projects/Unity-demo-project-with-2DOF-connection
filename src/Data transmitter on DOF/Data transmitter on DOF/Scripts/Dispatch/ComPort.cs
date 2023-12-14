@@ -25,16 +25,12 @@ public static class ComPort
             PortName = "COM" + comPortNumber
         };
 
-        Console.WriteLine("ComPort_SerialPort, Connecting to COM port");
-
         try
         {
             serialPort.Open();
-            Console.WriteLine("true");
         }
         catch
         {
-            Console.WriteLine("false");
             return false;
         }
 

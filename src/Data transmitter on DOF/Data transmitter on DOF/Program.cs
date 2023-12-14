@@ -13,16 +13,24 @@ unsafe
 {
     DataProcessingAndTransmission dataProcessingAndTransmission;
     ObjectTelemetryData* objectTelemetryDataLink;
-    Thread memoryDataGrabTask;
 
-    ComPort.TryConnect();
     InitializeParameters();
-    InitializeMemoryDataGrabTask();
+    var memoryDataGrabTask = new Thread(MemoryDataGrab);
+    var connectedToComPortTask = new Thread(ConnectedToComPort);
 
+    connectedToComPortTask.Start();
     memoryDataGrabTask.Start();
     dataProcessingAndTransmission.Start();
 
-    Console.ReadLine();
+    while (true)
+    {
+        var key = Console.ReadKey(true);
+
+        if (key.Key == ConsoleKey.Escape)
+        {
+            break;
+        }
+    }
 
     dataProcessingAndTransmission.Dispose();
     memoryDataGrabTask.Abort();
@@ -72,9 +80,20 @@ unsafe
         }
     }
 
-    void InitializeMemoryDataGrabTask()
+    void ConnectedToComPort()
     {
-        memoryDataGrabTask = new Thread(MemoryDataGrab);
+        while (true)
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                if (ComPort.TryConnect(comPortNumber: i))
+                {
+                    Console.WriteLine($"Connected to COM{i}");
+                    return;
+                }
+                Thread.Sleep(1000);
+            }
+        }
     }
 
     void MemoryDataGrab()
@@ -83,8 +102,7 @@ unsafe
 
         while (true)
         {
-            using var memoryMappedFile =
-                MemoryMappedFile.CreateOrOpen(MemoryDataGrabber.MAP_NAME, MemoryDataGrabber.DATA_SIZE);
+            using var memoryMappedFile = MemoryMappedFile.CreateOrOpen(MemoryDataGrabber.MAP_NAME, MemoryDataGrabber.DATA_SIZE);
             using var accessor = memoryMappedFile.CreateViewAccessor();
 
             var receivedData = new double[MemoryDataGrabber.DATA_COUNT];
