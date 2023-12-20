@@ -14,13 +14,19 @@ unsafe
     DataProcessingAndTransmission dataProcessingAndTransmission;
     ObjectTelemetryData* objectTelemetryDataLink;
 
-    InitializeParameters();
-    var memoryDataGrabTask = new Thread(MemoryDataGrab);
-    var connectedToComPortTask = new Thread(ConnectedToComPort);
+    CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-    connectedToComPortTask.Start();
+    InitializeParameters();
+
+    var memoryDataGrabTask = new Task(() => MemoryDataGrab(), TaskCreationOptions.LongRunning);
+    var connectedToComPortTask = new Task(() => ConnectedToComPort(), TaskCreationOptions.LongRunning);
+    var transmitTelemetryDataTask = new Task(() => dataProcessingAndTransmission.TransmitTelemetryData(), TaskCreationOptions.LongRunning);
+
     memoryDataGrabTask.Start();
-    dataProcessingAndTransmission.Start();
+    Thread.Sleep(100);
+    transmitTelemetryDataTask.Start();
+    Thread.Sleep(100);
+    connectedToComPortTask.Start();
 
     while (true)
     {
@@ -28,12 +34,14 @@ unsafe
 
         if (key.Key == ConsoleKey.Escape)
         {
+            cancellationTokenSource.Cancel();
             break;
         }
     }
 
+    Task.WaitAll(memoryDataGrabTask, connectedToComPortTask, transmitTelemetryDataTask);
+
     dataProcessingAndTransmission.Dispose();
-    memoryDataGrabTask.Abort();
 
     return;
 
@@ -82,8 +90,21 @@ unsafe
 
     void ConnectedToComPort()
     {
+        bool isFirstTime = true;
+
         while (true)
         {
+            if (isFirstTime == false)
+            {
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+            }
+            else
+            {
+                isFirstTime = false;
+            }
+
+            Console.WriteLine($"Tryconnected to COM\t" + DateTime.Now);
+
             for (var i = 0; i < 10; i++)
             {
                 if (ComPort.TryConnect(comPortNumber: i))
@@ -91,8 +112,8 @@ unsafe
                     Console.WriteLine($"Connected to COM{i}");
                     return;
                 }
-                Thread.Sleep(1000);
             }
+            Thread.Sleep(2500);
         }
     }
 
@@ -102,6 +123,12 @@ unsafe
 
         while (true)
         {
+            if (ComPort.IsOpen() == false)
+            {
+                Thread.Sleep(1000);
+                continue;
+            }
+
             using var memoryMappedFile = MemoryMappedFile.CreateOrOpen(MemoryDataGrabber.MAP_NAME, MemoryDataGrabber.DATA_SIZE);
             using var accessor = memoryMappedFile.CreateViewAccessor();
 
@@ -119,4 +146,12 @@ unsafe
             Thread.Sleep(20);
         }
     }
+}
+
+static void ClearCurrentConsoleLine()
+{
+    int currentLineCursor = Console.CursorTop;
+    Console.SetCursorPosition(0, Console.CursorTop);
+    Console.Write(new string(' ', Console.WindowWidth));
+    Console.SetCursorPosition(0, currentLineCursor);
 }
