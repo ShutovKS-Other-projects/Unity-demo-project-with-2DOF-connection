@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <RootNamespace>Custom 2DOF center</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <ApplicationIcon>Resources\Icon\icon.ico</ApplicationIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="System.IO.Ports" Version="8.0.0-rc.2.23479.6" />
+      <PackageReference Include="System.Management" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\Json\axisDofDataArray1.json" />
+      <EmbeddedResource Include="Resources\Json\axisDofDataArray1.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\Json\axisDofDataArray2.json" />
+      <EmbeddedResource Include="Resources\Json\axisDofDataArray2.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\Json\axisDofDataArray3.json" />
+      <EmbeddedResource Include="Resources\Json\axisDofDataArray3.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\Json\axisDofDataArray4.json" />
+      <EmbeddedResource Include="Resources\Json\axisDofDataArray4.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Resources\Json\gameSetting.json" />
+      <Content Include="Resources\Icon\icon.ico" />
+      <EmbeddedResource Include="Resources\Json\gameSetting.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+
+</Project>
