@@ -19,15 +19,41 @@ unsafe
     InitializeParameters();
 
     var memoryDataGrabTask = new Task(() => MemoryDataGrab(), TaskCreationOptions.LongRunning);
-    var connectedToComPortTask = new Task(() => ConnectedToComPort(), TaskCreationOptions.LongRunning);
     var transmitTelemetryDataTask = new Task(() => dataProcessingAndTransmission.TransmitTelemetryData(), TaskCreationOptions.LongRunning);
 
-    memoryDataGrabTask.Start();
-    Thread.Sleep(100);
-    transmitTelemetryDataTask.Start();
-    Thread.Sleep(100);
-    connectedToComPortTask.Start();
+    while (true)
+    {
+        Console.WriteLine("Введите номер COM порта (по умолчанию 3):");
+        var comPortNumber = Console.ReadLine();
 
+        if (comPortNumber == string.Empty)
+        {
+            comPortNumber = "3";
+        }
+
+        if (int.TryParse(comPortNumber, out var comPortNumberInt) == false)
+        {
+            Console.Clear();
+            Console.WriteLine("Неверный ввод");
+            continue;
+        }
+
+        if (ComPort.TryConnect(comPortNumberInt) == false)
+        {
+            Console.Clear();
+            Console.WriteLine("Не удалось подключиться к COM порту");
+            continue;
+        }
+        else
+        {
+            Console.WriteLine($"Подключение к COM порту {comPortNumberInt} установлено");
+            break;
+        }
+    }
+   
+    memoryDataGrabTask.Start();
+    transmitTelemetryDataTask.Start();
+   
     while (true)
     {
         var key = Console.ReadKey(true);
@@ -39,7 +65,7 @@ unsafe
         }
     }
 
-    Task.WaitAll(memoryDataGrabTask, connectedToComPortTask, transmitTelemetryDataTask);
+    Task.WaitAll(memoryDataGrabTask, transmitTelemetryDataTask);
 
     dataProcessingAndTransmission.Dispose();
 
@@ -85,35 +111,6 @@ unsafe
         string GetPath(string fileName)
         {
             return File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DirectoriesPaths.JSON_DATA_PATH, fileName));
-        }
-    }
-
-    void ConnectedToComPort()
-    {
-        bool isFirstTime = true;
-
-        while (true)
-        {
-            if (isFirstTime == false)
-            {
-                Console.SetCursorPosition(0, Console.CursorTop - 1);
-            }
-            else
-            {
-                isFirstTime = false;
-            }
-
-            Console.WriteLine($"Tryconnected to COM\t" + DateTime.Now);
-
-            for (var i = 0; i < 10; i++)
-            {
-                if (ComPort.TryConnect(comPortNumber: i))
-                {
-                    Console.WriteLine($"Connected to COM{i}");
-                    return;
-                }
-            }
-            Thread.Sleep(2500);
         }
     }
 
