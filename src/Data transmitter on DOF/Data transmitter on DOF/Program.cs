@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.IO.MemoryMappedFiles;
+using System.IO.Ports;
 using DataTransmitterOnDOF.Data.Constant;
 using DataTransmitterOnDOF.Data.Dynamic;
 using DataTransmitterOnDOF.Dispatch;
@@ -23,15 +24,15 @@ unsafe
 
     while (true)
     {
-        Console.WriteLine("Введите номер COM порта (по умолчанию 3):");
-        var comPortNumber = Console.ReadLine();
-
-        if (comPortNumber == string.Empty)
+        foreach (var portName in SerialPort.GetPortNames())
         {
-            comPortNumber = "3";
+            Console.WriteLine($"Найден COM порт {portName}");
         }
 
-        if (int.TryParse(comPortNumber, out var comPortNumberInt) == false)
+        Console.WriteLine("Введите номер COM порта:");
+        var comPortNumber = Console.ReadLine();
+
+        if (comPortNumber == string.Empty || int.TryParse(comPortNumber, out var comPortNumberInt) == false)
         {
             Console.Clear();
             Console.WriteLine("Неверный ввод");
@@ -50,10 +51,10 @@ unsafe
             break;
         }
     }
-   
+
     memoryDataGrabTask.Start();
     transmitTelemetryDataTask.Start();
-   
+
     while (true)
     {
         var key = Console.ReadKey(true);
