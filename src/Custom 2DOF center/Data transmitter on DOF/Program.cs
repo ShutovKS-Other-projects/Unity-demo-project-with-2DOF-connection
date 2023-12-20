@@ -132,7 +132,7 @@ unsafe
 
     void MemoryDataGrab()
     {
-        Console.WriteLine($"Memory mapped file created");
+        Console.WriteLine($"Отслеживание памяти включено.");
 
         while (true)
         {

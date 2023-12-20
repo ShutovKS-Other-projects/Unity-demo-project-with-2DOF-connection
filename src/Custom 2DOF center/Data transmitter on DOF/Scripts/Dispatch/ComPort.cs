@@ -39,7 +39,7 @@ public static class ComPort
 
     public static void Disconnect()
     {
-        Console.WriteLine("Disconnecting from COM port");
+        Console.WriteLine("Отключение от COM-порта.");
         try
         {
             if (IsOpen())
@@ -76,7 +76,7 @@ public static class ComPort
             }
             else
             {
-                Console.WriteLine("Serial port is not open");
+                Console.WriteLine("���� �� ������");
             }
         }
         catch
