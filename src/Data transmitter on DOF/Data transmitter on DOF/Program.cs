@@ -1,7 +1,7 @@
 ﻿#region
 
 using System.IO.MemoryMappedFiles;
-using System.IO.Ports;
+using System.Management;
 using DataTransmitterOnDOF.Data.Constant;
 using DataTransmitterOnDOF.Data.Dynamic;
 using DataTransmitterOnDOF.Dispatch;
@@ -24,10 +24,25 @@ unsafe
 
     while (true)
     {
-        foreach (var portName in SerialPort.GetPortNames())
+        using ManagementObjectSearcher searcher = new("SELECT DeviceID, Description FROM Win32_SerialPort");
+        if (searcher.Get().Count == 0)
         {
-            Console.WriteLine($"Найден COM порт {portName}");
+            Console.Clear();
+            Console.WriteLine("COM порты не найдены\t" + DateTime.Now);
+            Thread.Sleep(1000);
+            continue;
         }
+
+        foreach (ManagementObject serialPort in searcher.Get())
+        {
+            var portName = serialPort["DeviceID"] as string;
+            var description = serialPort["Description"] as string;
+
+            Console.WriteLine($"{portName} {description}");
+
+            serialPort.Dispose();
+        }
+        Console.WriteLine("-----------------------------------");
 
         Console.WriteLine("Введите номер COM порта:");
         var comPortNumber = Console.ReadLine();
